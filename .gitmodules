@@ -1,3 +1,12 @@
 [submodule "geoflow"]
 	path = geoflow
 	url = git@github.com:geoflow3d/geoflow.git
+[submodule "plugins/gfp-gdal"]
+	path = plugins/gfp-gdal
+	url = git@github.com:geoflow3d/gfp-gdal.git
+[submodule "plugins/gfp-las"]
+	path = plugins/gfp-las
+	url = git@github.com:geoflow3d/gfp-las.git
+[submodule "plugins/gfp-val3dity"]
+	path = plugins/gfp-val3dity
+	url = git@github.com:geoflow3d/gfp-val3dity.git
