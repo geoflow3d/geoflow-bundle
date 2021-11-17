@@ -1,0 +1,3 @@
+[submodule "geoflow"]
+	path = geoflow
+	url = git@github.com:geoflow3d/geoflow.git
