@@ -10,3 +10,9 @@
 [submodule "plugins/gfp-val3dity"]
 	path = plugins/gfp-val3dity
 	url = git@github.com:geoflow3d/gfp-val3dity.git
+[submodule "flowcharts/gfc-lod13"]
+	path = flowcharts/gfc-lod13
+	url = git@github.com:geoflow3d/gfc-lod13.git
+[submodule "flowcharts/gfc-lod22"]
+	path = flowcharts/gfc-lod22
+	url = git@github.com:geoflow3d/gfc-lod22.git
