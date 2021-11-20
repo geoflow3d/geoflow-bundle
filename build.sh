@@ -20,11 +20,8 @@ set -e
 set -x
 
 # update git modules
-cd $EXTERNAL_DIR
-git submodule update --init geoflow
-git submodule update --init gfp-gdal
-git submodule update --init gfp-val3dity
-git submodule update --init gfp-building-reconstruction
+cd $ROOT_DIR
+git submodule update --init
 
 # create necesary directories if needed
 #mkdir -p "$GF_INSTALL_PREFIX"
