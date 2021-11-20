@@ -16,3 +16,9 @@
 [submodule "flowcharts/gfc-lod22"]
 	path = flowcharts/gfc-lod22
 	url = git@github.com:geoflow3d/gfc-lod22.git
+[submodule "plugins/gfp-basic3d"]
+	path = plugins/gfp-basic3d
+	url = git@github.com:geoflow3d/gfp-basic3d.git
+[submodule "plugins/gfp-building-reconstruction"]
+	path = plugins/gfp-building-reconstruction
+	url = git@github.com:geoflow3d/gfp-building-reconstruction.git
