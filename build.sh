@@ -39,33 +39,41 @@ cmake --build . --parallel $N_PARALLEL --config Release
 make install
 
 # install GDAL
-mkdir -p "$ROOT_DIR"/dependencies
-cd "$ROOT_DIR"/dependencies
-wget https://github.com/OSGeo/gdal/releases/download/v3.3.3/gdal-3.3.3.tar.gz
-tar -zxvf gdal-3.3.3.tar.gz
-cd gdal-3.3.3
-./configure --prefix=$INSTALL_PREFIX
-make -j$N_PARALLEL install
+if [[ -d "$ROOT_DIR"/dependencies/gdal-3.3.3 ]]
+then
+ mkdir -p "$ROOT_DIR"/dependencies
+ cd "$ROOT_DIR"/dependencies
+ wget https://github.com/OSGeo/gdal/releases/download/v3.3.3/gdal-3.3.3.tar.gz
+ tar -zxvf gdal-3.3.3.tar.gz
+ cd gdal-3.3.3
+ ./configure --prefix=$INSTALL_PREFIX
+ make -j$N_PARALLEL install
+fi
 
 # install CGAL
-cd "$ROOT_DIR"/dependencies
-wget https://github.com/CGAL/cgal/releases/download/v5.3/CGAL-5.3.tar.xz
-tar -xf CGAL-5.3.tar.xz 
-cd CGAL-5.3/
-mkdir build
-cd build/
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
-sudo make install -j$N_PARALLEL
+if [[ -d "$ROOT_DIR"/dependencies/CGAL-5.3 ]]
+then
+ cd "$ROOT_DIR"/dependencies
+ wget https://github.com/CGAL/cgal/releases/download/v5.3/CGAL-5.3.tar.xz
+ tar -xf CGAL-5.3.tar.xz 
+ cd CGAL-5.3/
+ mkdir build
+ cd build/
+ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+ sudo make install -j$N_PARALLEL
+fi
 
 #install LASlib/tools
-cd "$ROOT_DIR"/dependencies
-git clone https://github.com/LAStools/LAStools.git
-cd LAStools/
-mkdir build
-cd build/
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
-sudo make -j$N_PARALLEL install
-
+if [[ -d "$ROOT_DIR"/dependencies/LAStools ]]
+ then
+ cd "$ROOT_DIR"/dependencies
+ git clone https://github.com/LAStools/LAStools.git
+ cd LAStools/
+ mkdir build
+ cd build/
+ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+ sudo make -j$N_PARALLEL install
+fi
 
 mkdir -p "$ROOT_DIR"/plugins/gfp-gdal/build
 cd "$ROOT_DIR"/plugins/gfp-gdal/build
