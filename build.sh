@@ -12,7 +12,7 @@ INSTALL_PREFIX=/opt
 GF_PLUGIN_FOLDER=/opt/geoflow-plugins
 
 # how many parallel threads to use for building
-N_PARALLEL=10
+N_PARALLEL=`getconf _NPROCESSORS_ONLN`
 
 # exit on error of any command
 set -e
