@@ -1,7 +1,7 @@
 #!/bin/zsh
 
-# external folder in the 3dbag-tools repository
-EXTERNAL_DIR=/home/rypeters/git/3dbag-tools/external
+# root directory of this repository
+ROOT_DIR=`pwd`
 
 # where to install geoflow (and also where dependencies can be found)
 # we need to have write permissions!
@@ -31,8 +31,8 @@ git submodule update --init gfp-building-reconstruction
 mkdir -p "$GF_PLUGIN_FOLDER"
 
 # build and install geoflow and plugins
-mkdir -p "$EXTERNAL_DIR"/geoflow/build
-cd $EXTERNAL_DIR/geoflow/build
+mkdir -p "$ROOT_DIR"/geoflow/build
+cd $ROOT_DIR/geoflow/build
 cmake .. \
  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
  -DGF_PLUGIN_FOLDER=$GF_PLUGIN_FOLDER \
@@ -42,8 +42,8 @@ cmake --build . --parallel $N_PARALLEL --config Release
 make install
 
 # install GDAL
-mkdir -p "$EXTERNAL_DIR"/dependencies
-cd "$EXTERNAL_DIR"/dependencies
+mkdir -p "$ROOT_DIR"/dependencies
+cd "$ROOT_DIR"/dependencies
 wget https://github.com/OSGeo/gdal/releases/download/v3.3.3/gdal-3.3.3.tar.gz
 tar -zxvf gdal-3.3.3.tar.gz
 cd gdal-3.3.3
@@ -51,7 +51,7 @@ cd gdal-3.3.3
 make -j$N_PARALLEL install
 
 # install CGAL
-cd "$EXTERNAL_DIR"/dependencies
+cd "$ROOT_DIR"/dependencies
 wget https://github.com/CGAL/cgal/releases/download/v5.3/CGAL-5.3.tar.xz
 tar -xf CGAL-5.3.tar.xz 
 cd CGAL-5.3/
@@ -61,6 +61,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 sudo make install -j$N_PARALLEL
 
 #install LASlib/tools
+cd "$ROOT_DIR"/dependencies
 git clone https://github.com/LAStools/LAStools.git
 cd LAStools/
 mkdir build
@@ -69,24 +70,32 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 sudo make -j$N_PARALLEL install
 
 
-mkdir -p "$EXTERNAL_DIR"/gfp-gdal/build
-cd $EXTERNAL_DIR/gfp-gdal/build
+mkdir -p "$ROOT_DIR"/plugins/gfp-gdal/build
+cd "$ROOT_DIR"/plugins/gfp-gdal/build
 cmake .. \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 cmake --build . --parallel $N_PARALLEL --config Release
 cp gfp_gdal.so $GF_PLUGIN_FOLDER
 
-mkdir -p "$EXTERNAL_DIR"/gfp-val3dity/build
-cd $EXTERNAL_DIR/gfp-val3dity/build
+mkdir -p "$ROOT_DIR"/plugins/gfp-val3dity/build
+cd "$ROOT_DIR"/plugins/gfp-val3dity/build
 cmake .. \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 cmake --build . --parallel $N_PARALLEL --config Release
 cp gfp_val3dity.so $GF_PLUGIN_FOLDER
 
-mkdir -p "$EXTERNAL_DIR"/gfp-building-reconstruction/build
-cd $EXTERNAL_DIR/gfp-building-reconstruction/build
+mkdir -p "$ROOT_DIR"/plugins/gfp-basic3d/build
+cd "$ROOT_DIR"/plugins/gfp-basic3d/build
+cmake .. \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+cmake --build . --parallel $N_PARALLEL --config Release
+cp gfp_core_io.so $GF_PLUGIN_FOLDER
+
+mkdir -p "$ROOT_DIR"/plugins/gfp-building-reconstruction/build
+cd "$ROOT_DIR"/plugins/gfp-building-reconstruction/build
 cmake .. \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
