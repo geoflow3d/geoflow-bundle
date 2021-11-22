@@ -74,3 +74,47 @@ RUN apk --update add --virtual .geos-deps \
     rm -rf /user/local/man && \
     for i in /usr/local/lib/libgeos*; do strip -s $i 2>/dev/null || /bin/true; done && \
     for i in /usr/local/bin/geos-config*; do strip -s $i 2>/dev/null || /bin/true; done
+
+#
+# 3 Install Boost
+#
+ARG BOOST_VERSION=1_77_0
+RUN apk add boost-dev && \
+    apk --update add \
+        zlib \
+        zstd \
+        xz \
+        icu \
+        bzip2 \
+        mpfr-dev \
+        eigen && \
+    apk --update add --virtual .boost-deps \
+        zlib-dev \
+        zstd-dev \
+        xz-dev \
+        icu-dev \
+        bzip2-dev \
+        make \
+        gcc \
+        g++ \
+        cmake \
+        linux-headers && \
+    cd /tmp && \
+    wget https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_${BOOST_VERSION}.tar.bz2 && \
+    tar xzfj boost_${BOOST_VERSION}.tar.bz2 && \
+    cd boost_${BOOST_VERSION} && \
+    ./bootstrap.sh \
+        --with-libraries=all \
+        --libdir=/usr/local/lib \
+        --includedir=/usr/local/include \
+        --exec-prefix=/usr/local && \
+    ./b2 \
+        --libdir=/usr/local/lib \
+        --includedir=/usr/local/include \
+        --exec-prefix=/usr/local \
+        install && \
+    cd ~ && \
+    apk del .boost-deps && \
+    rm -rf /tmp/* && \
+    rm -rf /user/local/man && \
+    for i in /usr/local/lib/libboost*; do strip -s $i 2>/dev/null || /bin/true; done
