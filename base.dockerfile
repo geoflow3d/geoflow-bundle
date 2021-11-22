@@ -144,3 +144,42 @@ RUN apk --update add --virtual .lastools-deps \
     apk del .lastools-deps && \
     rm -rf /tmp/* && \
     rm -rf /user/local/man
+
+#
+# 5 Install CGAL
+#
+ARG CGAL_VERSION=5.3
+RUN apk --update add \
+        gmp \
+        mpfr-dev \
+        eigen \
+        zlib && \
+    apk --update add --virtual .cgal-deps \
+        make \
+        gcc \
+        gmp-dev \
+        mpfr-dev \
+        eigen-dev \
+        zlib-dev \
+        g++ \
+        git \
+        cmake \
+        linux-headers && \
+    cd /tmp && \
+    wget https://github.com/CGAL/cgal/releases/download/v${CGAL_VERSION}/CGAL-${CGAL_VERSION}.tar.xz && \
+    tar xf CGAL-${CGAL_VERSION}.tar.xz && \
+    cd CGAL-${CGAL_VERSION} && \
+    mkdir build && \
+    cd build && \
+    cmake \
+        -DBoost_NO_BOOST_CMAKE=TRUE \
+        -DBoost_NO_SYSTEM_PATHS=TRUE \
+        -DBOOST_ROOT=/usr/local \
+        -DCMAKE_BUILD_TYPE=Release .. && \
+    make && \
+    make install && \
+    cd ~ && \
+    apk del .cgal-deps && \
+    rm -rf /tmp/* && \
+    rm -rf /user/local/man && \
+    for i in /usr/local/lib64/libCGAL*; do strip -s $i 2>/dev/null || /bin/true; done
