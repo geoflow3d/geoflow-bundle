@@ -118,3 +118,29 @@ RUN apk add boost-dev && \
     rm -rf /tmp/* && \
     rm -rf /user/local/man && \
     for i in /usr/local/lib/libboost*; do strip -s $i 2>/dev/null || /bin/true; done
+
+#
+# 4 Install LASTools
+#
+ARG LASTOOLS_VERSION=9ecb4e682153436b044adaeb3b4bfdf556109a0f
+RUN apk --update add --virtual .lastools-deps \
+        which \
+        make \
+        cmake \
+        gcc \
+        g++ \
+        file \
+        git \
+        libtool && \
+    cd /tmp && \
+    git clone https://github.com/LAStools/LAStools.git lastools && \
+    cd lastools && \
+    git checkout ${LASTOOLS_VERSION} && \
+    mkdir "_build" && \
+    cd "_build" && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make && \
+    make install && \
+    apk del .lastools-deps && \
+    rm -rf /tmp/* && \
+    rm -rf /user/local/man
