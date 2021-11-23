@@ -172,10 +172,16 @@ RUN apk --update add \
     mkdir build && \
     cd build && \
     cmake \
-        -DBoost_NO_BOOST_CMAKE=TRUE \
-        -DBoost_NO_SYSTEM_PATHS=TRUE \
+        -DBoost_NO_BOOST_CMAKE=ON \
+        -DBoost_NO_SYSTEM_PATHS=ON \
         -DBOOST_ROOT=/usr/local \
-        -DCMAKE_BUILD_TYPE=Release .. && \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DWITH_examples=OFF \
+        -DWITH_demos=OFF \
+        -DWITH_CGAL_Core=ON \
+        -DWITH_CGAL_Qt5=OFF \
+        -DWITH_CGAL_ImageIO=OFF \
+        .. && \
     make && \
     make install && \
     cd ~ && \
@@ -183,3 +189,98 @@ RUN apk --update add \
     rm -rf /tmp/* && \
     rm -rf /user/local/man && \
     for i in /usr/local/lib64/libCGAL*; do strip -s $i 2>/dev/null || /bin/true; done
+
+##
+## 6 Install SFCGAL
+##
+#ARG SFCGAL_VERSION=1.3.10
+#RUN apk --update add \
+#        gmp \
+#        mpfr4 \
+#        zlib && \
+#    apk --update add --virtual .sfcgal-deps \
+#        make \
+#        gcc \
+#        gmp-dev \
+#        mpfr-dev \
+#        zlib-dev \
+#        g++ \
+#        cmake \
+#        linux-headers && \
+#    cd /tmp && \
+#    wget https://gitlab.com/Oslandia/SFCGAL/-/archive/v${SFCGAL_VERSION}/SFCGAL-v${SFCGAL_VERSION}.tar.gz && \
+#    tar xvfz SFCGAL-v${SFCGAL_VERSION}.tar.gz && \
+#    cd SFCGAL-v${SFCGAL_VERSION} && \
+#    mkdir build && \
+#    cd build && \
+#    cmake \
+#        -DBoost_NO_BOOST_CMAKE=TRUE \
+#        -DBoost_NO_SYSTEM_PATHS=TRUE \
+#        -DBOOST_ROOT=/usr/local \
+#        .. && \
+#    make && \
+#    make install && \
+#    cd ~ && \
+#    apk del .sfcgal-deps && \
+#    rm -rf /tmp/* && \
+#    rm -rf /user/local/man && \
+#    for i in /usr/local/lib64/libSFCGAL*; do strip -s $i 2>/dev/null || /bin/true; done
+
+#
+# 7 Install PostGIS
+#
+ARG POSTGIS_VERSION=3.1.4
+# RUN ln -sf /usr/local/lib64/libSFCGAL.so /usr/local/lib && \
+RUN apk --update add \
+        curl \
+        nghttp2 \
+        zlib \
+        zstd \
+        xz \
+        icu \
+        bzip2 \
+        mpfr4 \
+        perl \
+        json-c \
+        libxml2 \
+        sqlite \
+        postgresql && \
+    apk --update add --virtual .postgis-deps \
+        curl-dev \
+        nghttp2-dev \
+        zlib-dev \
+        zstd-dev \
+        xz-dev \
+        icu-dev \
+        bzip2-dev \
+        mpfr-dev \
+        git \
+        make \
+        wget \
+        gcc \
+        g++ \
+        file \
+        perl-dev \
+        json-c-dev \
+        libxml2-dev \
+        sqlite-dev \
+        postgresql-dev \
+        tiff-dev \
+        portablexdr-dev \
+        linux-headers && \
+    cd /tmp && \
+    wget http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz && \
+    tar xzf postgis-${POSTGIS_VERSION}.tar.gz && \
+    cd postgis-${POSTGIS_VERSION} && \
+    ./configure \
+        --without-raster \
+        --without-topology  \
+        --without-address-standardizer \
+        --without-phony-revision \
+        --without-protobuf && \
+    make && \
+    make install && \
+    cd ~ && \
+    apk del .postgis-deps && \
+    rm -rf /tmp/* && \
+    rm -rf /user/local/man
