@@ -6,6 +6,7 @@ LABEL description="Base image for building the geoflow-bundle"
 #LABEL org.name="3D Geoinformation Research Group, Delft University of Technology, Netherlands" org.website="https://3d.bk.tudelft.nl/"
 #LABEL website="http://tudelft3d.github.io/3dfier"
 #LABEL version="1.3"
+ARG JOBS
 
 #
 # 1 Install proj
@@ -30,7 +31,7 @@ RUN apk --update add sqlite libstdc++ sqlite-libs libgcc && \
       --without-curl \
       --enable-lto \
       CFLAGS="-O3" CXXFLAGS="-O3" && \
-    make && \
+    make -j $JOBS && \
     make install && \
     echo "Entering root folder" && \
     cd / &&\
@@ -65,7 +66,7 @@ RUN apk --update add --virtual .geos-deps \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_DOCUMENTATION=OFF \
         .. && \
-    make && \
+    make -j $JOBS && \
     ctest && \
     make install && \
     cd ~ && \
@@ -139,7 +140,7 @@ RUN apk --update add --virtual .lastools-deps \
     mkdir "_build" && \
     cd "_build" && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
-    make && \
+    make -j $JOBS && \
     make install && \
     apk del .lastools-deps && \
     rm -rf /tmp/* && \
@@ -182,7 +183,7 @@ RUN apk --update add \
         -DWITH_CGAL_Qt5=OFF \
         -DWITH_CGAL_ImageIO=OFF \
         .. && \
-    make && \
+    make -j $JOBS && \
     make install && \
     cd ~ && \
     apk del .cgal-deps && \
@@ -278,9 +279,49 @@ RUN apk --update add \
         --without-address-standardizer \
         --without-phony-revision \
         --without-protobuf && \
-    make && \
+    make -j $JOBS && \
     make install && \
     cd ~ && \
     apk del .postgis-deps && \
     rm -rf /tmp/* && \
     rm -rf /user/local/man
+
+#
+# 8 Install GDAL
+#
+ARG GDAL_VERSION=3.4.0
+RUN apk --update add \
+        xz \
+        zstd \
+        sqlite && \
+    apk --update add --virtual .gdal-deps \
+        xz-dev \
+        zstd-dev \
+        curl-dev \
+        sqlite-dev \
+        make \
+        gcc \
+        g++ \
+        file \
+        postgresql-dev \
+        portablexdr-dev \
+        linux-headers && \
+    cd /tmp && \
+    wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz && \
+    tar xzf gdal-${GDAL_VERSION}.tar.gz && \
+    rm -f gdal-${GDAL_VERSION}.tar.gz && \
+    cd gdal-${GDAL_VERSION} && \
+    ./configure \
+        PQ_CFLAGS="-I/usr/include/postgresql" \
+        PQ_LIBS="-L/usr/lib/postgresql14 -lpq" \
+        CFLAGS="-g -O3" \
+        CXXFLAGS="-g -O3" \
+        --enable-lto && \
+    make -j $JOBS && \
+    make install && \
+    cd ~ && \
+    apk del .gdal-deps && \
+    rm -rf /tmp/* && \
+    rm -rf /user/local/man && \
+    for i in /usr/local/lib/libgdal*; do strip -s $i 2>/dev/null || /bin/true; done && \
+    for i in /usr/local/bin/gdal*; do strip -s $i 2>/dev/null || /bin/true; done
