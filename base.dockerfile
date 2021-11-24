@@ -291,20 +291,16 @@ RUN apk --update add \
 #
 ARG GDAL_VERSION=3.4.0
 RUN apk --update add \
-        xz \
-        zstd \
-        sqlite && \
-    apk --update add --virtual .gdal-deps \
         xz-dev \
         zstd-dev \
-        curl-dev \
         sqlite-dev \
+        postgresql-dev \
+        portablexdr-dev && \
+    apk --update add --virtual .gdal-deps \
         make \
         gcc \
         g++ \
         file \
-        postgresql-dev \
-        portablexdr-dev \
         linux-headers && \
     cd /tmp && \
     wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz && \

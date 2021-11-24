@@ -132,3 +132,38 @@ RUN apk --update add --virtual .basic3d-deps \
     apk del .basic3d-deps && \
     rm -rf $plugins_dir/gfp-basic3d && \
     rm -rf /user/local/man
+
+#
+# 5 Plugin: building-reconstruction
+#
+COPY plugins/gfp-building-reconstruction $plugins_dir/gfp-building-reconstruction
+RUN apk --update add --virtual .building-reconstruction-deps \
+        gmp-dev \
+        mpfr-dev \
+        eigen-dev \
+        make \
+        clang \
+        clang-dev \
+        gcc \
+        g++ \
+        lld \
+        cmake \
+        git \
+        linux-headers && \
+    cd $plugins_dir/gfp-building-reconstruction && \
+    git submodule update --init --recursive && \
+    mkdir $plugins_dir/gfp-building-reconstruction/build && \
+    cd $plugins_dir/gfp-building-reconstruction/build && \
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DGFP_WITH_PDAL=OFF && \
+    cmake \
+        --build . \
+        --parallel $JOBS \
+        --config Release && \
+    cp gfp_buildingreconstruction.so $GF_PLUGIN_FOLDER && \
+    cd ~ && \
+    apk del .building-reconstruction-deps && \
+    rm -rf $plugins_dir/gfp-building-reconstruction && \
+    rm -rf /user/local/man
