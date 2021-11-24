@@ -45,7 +45,7 @@ RUN apk --update add --virtual .geoflow-deps \
 #
 # 2 Plugin: GDAL
 #
-RUN apk --update add --virtual .geoflow-deps \
+RUN apk --update add --virtual .gdal-deps \
         make \
         gcc \
         g++ \
@@ -65,6 +65,36 @@ RUN apk --update add --virtual .geoflow-deps \
         --config Release && \
     cp gfp_gdal.so $GF_PLUGIN_FOLDER && \
     cd ~ && \
-    apk del .geoflow-deps && \
+    apk del .gdal-deps && \
     rm -rf $plugins_dir/gfp-gdal && \
+    rm -rf /user/local/man
+
+#
+# 3 Plugin: val3dity
+#
+RUN apk --update add --virtual .val3dity-deps \
+        gmp-dev \
+        mpfr-dev \
+        eigen-dev \
+        make \
+        gcc \
+        g++ \
+        cmake \
+        git \
+        linux-headers && \
+    cd $plugins_dir/gfp-val3dity && \
+    git submodule update --init --recursive && \
+    mkdir $plugins_dir/gfp-val3dity/build && \
+    cd $plugins_dir/gfp-val3dity/build && \
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+        -DCMAKE_BUILD_TYPE=Release && \
+    cmake \
+        --build . \
+        --parallel $JOBS \
+        --config Release && \
+    cp gfp_val3dity.so $GF_PLUGIN_FOLDER && \
+    cd ~ && \
+    apk del .val3dity-deps && \
+    rm -rf $plugins_dir/gfp-val3dity && \
     rm -rf /user/local/man
