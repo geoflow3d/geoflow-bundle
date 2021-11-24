@@ -6,15 +6,19 @@ LABEL description="Builder image for building the geoflow-bundle"
 ARG JOBS
 ARG INSTALL_PREFIX="/usr/local"
 ARG GF_PLUGIN_FOLDER="/usr/local/geoflow-plugins"
+ARG root="/tmp"
+ARG geoflow_dir="$root/geoflow"
+ARG plugins_dir="$root/plugins"
 
-COPY . /tmp
-ARG geoflow_dir="/tmp/geoflow"
-ARG plugins_dir="/tmp/plugins"
 RUN mkdir $GF_PLUGIN_FOLDER
+
+COPY .git $root/.git
+COPY .gitmodules $root
 
 #
 # 1 Install Geoflow
 #
+COPY geoflow $geoflow_dir
 RUN apk --update add --virtual .geoflow-deps \
         make \
         gcc \
@@ -45,6 +49,7 @@ RUN apk --update add --virtual .geoflow-deps \
 #
 # 2 Plugin: GDAL
 #
+COPY plugins/gfp-gdal $plugins_dir/gfp-gdal
 RUN apk --update add --virtual .gdal-deps \
         make \
         gcc \
@@ -72,6 +77,7 @@ RUN apk --update add --virtual .gdal-deps \
 #
 # 3 Plugin: val3dity
 #
+COPY plugins/gfp-val3dity $plugins_dir/gfp-val3dity
 RUN apk --update add --virtual .val3dity-deps \
         gmp-dev \
         mpfr-dev \
@@ -97,4 +103,32 @@ RUN apk --update add --virtual .val3dity-deps \
     cd ~ && \
     apk del .val3dity-deps && \
     rm -rf $plugins_dir/gfp-val3dity && \
+    rm -rf /user/local/man
+
+#
+# 4 Plugin: basic3d
+#
+COPY plugins/gfp-basic3d $plugins_dir/gfp-basic3d
+RUN apk --update add --virtual .basic3d-deps \
+        make \
+        gcc \
+        g++ \
+        cmake \
+        git \
+        linux-headers && \
+    cd $plugins_dir/gfp-basic3d && \
+    git submodule update --init --recursive && \
+    mkdir $plugins_dir/gfp-basic3d/build && \
+    cd $plugins_dir/gfp-basic3d/build && \
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+        -DCMAKE_BUILD_TYPE=Release && \
+    cmake \
+        --build . \
+        --parallel $JOBS \
+        --config Release && \
+    cp gfp_core_io.so $GF_PLUGIN_FOLDER && \
+    cd ~ && \
+    apk del .basic3d-deps && \
+    rm -rf $plugins_dir/gfp-basic3d && \
     rm -rf /user/local/man
