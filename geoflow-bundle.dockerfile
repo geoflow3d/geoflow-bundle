@@ -41,3 +41,30 @@ RUN apk --update add --virtual .geoflow-deps \
     rm -rf $geoflow_dir && \
     rm -rf /user/local/man && \
     geof --help
+
+#
+# 2 Plugin: GDAL
+#
+RUN apk --update add --virtual .geoflow-deps \
+        make \
+        gcc \
+        g++ \
+        cmake \
+        git \
+        linux-headers && \
+    cd $plugins_dir/gfp-gdal && \
+    git submodule update --init --recursive && \
+    mkdir $plugins_dir/gfp-gdal/build && \
+    cd $plugins_dir/gfp-gdal/build && \
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+        -DCMAKE_BUILD_TYPE=Release && \
+    cmake \
+        --build . \
+        --parallel $JOBS \
+        --config Release && \
+    cp gfp_gdal.so $GF_PLUGIN_FOLDER && \
+    cd ~ && \
+    apk del .geoflow-deps && \
+    rm -rf $plugins_dir/gfp-gdal && \
+    rm -rf /user/local/man
