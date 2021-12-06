@@ -23,7 +23,6 @@ docker run \
   -v /my/dir/data:/data/in_out_data \
   -v /my/dir/flowcharts:/data/flowcharts \
   geoflow3d/geoflow-bundle:latest \
-  geof \
   /data/flowcharts/runner.json \
   -c config.toml
 ```

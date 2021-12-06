@@ -174,4 +174,11 @@ RUN apk --update add --virtual .building-reconstruction-deps \
 
 # Clean up
 RUN rm -rf /tmp && \
+    mkdir /tmp && \
     chmod 1777 /tmp
+# Needed for stripping the image
+RUN apk add bash
+
+ENTRYPOINT ["/usr/local/bin/geof"]
+
+CMD ["--help"]
