@@ -173,4 +173,5 @@ RUN apk --update add --virtual .building-reconstruction-deps \
     rm -rf /user/local/man \
 
 # Clean up
-RUN rm -rf /tmp/*
+RUN rm -rf /tmp && \
+    chmod 1777 /tmp
