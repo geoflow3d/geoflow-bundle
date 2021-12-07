@@ -1,7 +1,7 @@
 FROM geoflow3d/geoflow-bundle-base:latest
 LABEL org.opencontainers.image.authors="b.dukai@tudelft.nl"
 LABEL maintainer.email="b.dukai@tudelft.nl" maintainer.name="Balázs Dukai"
-LABEL description="Builder image for building the geoflow-bundle"
+LABEL description="Builder image for building the geoflow executable with all of its plugins for building reconstruction."
 
 ARG JOBS
 ARG INSTALL_PREFIX="/usr/local"
@@ -170,17 +170,26 @@ RUN apk --update add --virtual .building-reconstruction-deps \
     rm -rf /user/local/man
 
 #
-# 6 Flowchart: LoD1.3
-#
-COPY flowcharts/gfc-lod13/runner.json flowcharts/gfc-lod13/reconstruct_one.json $GF_FLOWCHART_FOLDER/gfc-lod13
-
 # Clean up
+#
 RUN rm -rf /tmp && \
     mkdir /tmp && \
     chmod 1777 /tmp
 # Needed for stripping the image
-RUN apk add bash
+RUN apk --update add bash
 
-ENTRYPOINT ["/usr/local/bin/geof", "/usr/local/geoflow-flowcharts/gfc-lod13/runner.json"]
-
-CMD ["--help"]
+#
+# Export the dependencies
+#
+RUN mkdir /export
+COPY strip-docker-image-export /tmp
+RUN bash /tmp/strip-docker-image-export \
+    -v \
+    -d /export \
+    -f /usr/local/share/proj/proj.db \
+    -f /usr/local/bin/geof \
+    -f /usr/local/geoflow-plugins/gfp_buildingreconstruction.so \
+    -f /usr/local/geoflow-plugins/gfp_core_io.so \
+    -f /usr/local/geoflow-plugins/gfp_gdal.so \
+    -f /usr/local/geoflow-plugins/gfp_val3dity.so
+RUN mkdir --parents "/export/usr/local/geoflow-flowcharts/gfc-lod13" "/export/usr/local/geoflow-flowcharts/gfc-lod22"
