@@ -245,7 +245,7 @@ RUN apk --update add \
         json-c \
         libxml2 \
         sqlite \
-        libpq && \
+        postgresql && \
     apk --update add --virtual .postgis-deps \
         curl-dev \
         nghttp2-dev \
@@ -294,7 +294,7 @@ RUN apk --update add \
         xz-dev \
         zstd-dev \
         sqlite-dev \
-        libpq \
+        postgresql-dev \
         portablexdr-dev && \
     apk --update add --virtual .gdal-deps \
         make \
