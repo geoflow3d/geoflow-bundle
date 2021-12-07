@@ -6,11 +6,14 @@ LABEL description="Builder image for building the geoflow-bundle"
 ARG JOBS
 ARG INSTALL_PREFIX="/usr/local"
 ARG GF_PLUGIN_FOLDER="/usr/local/geoflow-plugins"
+ARG GF_FLOWCHART_FOLDER="/usr/local/geoflow-flowcharts"
 ARG root="/tmp"
 ARG geoflow_dir="$root/geoflow"
 ARG plugins_dir="$root/plugins"
+ARG flowcharts_dir="$root/flowcharts"
 
-RUN mkdir $GF_PLUGIN_FOLDER
+RUN mkdir $GF_PLUGIN_FOLDER && \
+    mkdir --parents $GF_FLOWCHART_FOLDER/gfc-lod13
 
 COPY .git $root/.git
 COPY .gitmodules $root
@@ -164,7 +167,12 @@ RUN apk --update add --virtual .building-reconstruction-deps \
     cd ~ && \
     apk del .building-reconstruction-deps && \
     rm -rf $plugins_dir/gfp-building-reconstruction && \
-    rm -rf /user/local/man \
+    rm -rf /user/local/man
+
+#
+# 6 Flowchart: LoD1.3
+#
+COPY flowcharts/gfc-lod13/runner.json flowcharts/gfc-lod13/reconstruct_one.json $GF_FLOWCHART_FOLDER/gfc-lod13
 
 # Clean up
 RUN rm -rf /tmp && \
@@ -173,6 +181,6 @@ RUN rm -rf /tmp && \
 # Needed for stripping the image
 RUN apk add bash
 
-ENTRYPOINT ["/usr/local/bin/geof"]
+ENTRYPOINT ["/usr/local/bin/geof", "/usr/local/geoflow-flowcharts/gfc-lod13/runner.json"]
 
 CMD ["--help"]

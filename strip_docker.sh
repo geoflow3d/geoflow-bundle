@@ -9,4 +9,6 @@ strip-docker-image -v \
   -f /usr/local/geoflow-plugins/gfp_buildingreconstruction.so \
   -f /usr/local/geoflow-plugins/gfp_core_io.so \
   -f /usr/local/geoflow-plugins/gfp_gdal.so \
-  -f /usr/local/geoflow-plugins/gfp_val3dity.so
+  -f /usr/local/geoflow-plugins/gfp_val3dity.so \
+  -f /usr/local/geoflow-flowcharts/gfc-lod13/runner.json \
+  -f /usr/local/geoflow-flowcharts/gfc-lod13/reconstruct_one.json
