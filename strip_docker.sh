@@ -4,6 +4,7 @@
 strip-docker-image -v \
   -i geoflow3d/geoflow-bundle:latest \
   -t geoflow3d/geoflow-bundle:stripped \
+  -f /usr/local/share/proj/proj.db \
   -f /usr/local/bin/geof \
   -f /usr/local/geoflow-plugins/gfp_buildingreconstruction.so \
   -f /usr/local/geoflow-plugins/gfp_core_io.so \
