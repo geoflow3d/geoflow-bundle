@@ -142,9 +142,6 @@ RUN apk --update add --virtual .building-reconstruction-deps \
         mpfr-dev \
         eigen-dev \
         make \
-#        clang \
-#        clang-dev \
-#        lld \
         gcc \
         g++ \
         cmake \
@@ -154,14 +151,11 @@ RUN apk --update add --virtual .building-reconstruction-deps \
     git submodule update --init --recursive && \
     mkdir $plugins_dir/gfp-building-reconstruction/build && \
     cd $plugins_dir/gfp-building-reconstruction/build && \
-#    rm /usr/bin/ld && \
-#    ln -s /usr/bin/ld.lld /usr/bin/ld && \
-#    export CC=/usr/bin/clang && \
-#    export CXX=/usr/bin/clang++ && \
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DCMAKE_BUILD_TYPE=Release \
-        -DGFP_WITH_PDAL=OFF && \
+        -DGFP_WITH_PDAL=OFF \
+        -DGFP_WITH_LOD2=OFF && \
     cmake \
         --build . \
         --parallel $JOBS \
