@@ -10,3 +10,17 @@ To clone this repository with all of its submodules use the command:
 ```
 $ git clone --recurse-submodules https://github.com/geoflow3d/geoflow-bundle.git
 ```
+
+## Running with Docker
+
+The building reconstruction tool for LoD1.3 models is packaged into a docker image, `geoflow3d/lod13tool`.
+An example command to run the reconstruction in a new container from the image and write the results to a database on the host:
+
+```shell
+docker run \
+  --rm \
+  --network=host \
+  -v /my/dir/data:/data/in_out_data \
+  geoflow3d/lod13tool:latest \
+  -c config.toml
+```
