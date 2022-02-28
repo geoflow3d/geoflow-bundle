@@ -1,11 +1,8 @@
 FROM alpine:3.15
-# See for additional annotations: https://github.com/opencontainers/image-spec/blob/main/annotations.md
-LABEL org.opencontainers.image.authors="b.dukai@tudelft.nl"
-LABEL maintainer.email="b.dukai@tudelft.nl" maintainer.name="Balázs Dukai"
-LABEL description="Base image for building the geoflow-bundle"
-#LABEL org.name="3D Geoinformation Research Group, Delft University of Technology, Netherlands" org.website="https://3d.bk.tudelft.nl/"
-#LABEL website="http://tudelft3d.github.io/3dfier"
-#LABEL version="1.3"
+LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
+LABEL org.opencontainers.image.vendor="3DGI"
+LABEL org.opencontainers.image.title="geoflow-bundle-base"
+LABEL org.opencontainers.image.description="Base image for building the geoflow-bundle"
 ARG JOBS
 
 #
