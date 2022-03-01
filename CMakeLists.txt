@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.13)
 
 project (Geoflow-bundle VERSION 0.0.1)
-
+# find_package(LASlib REQUIRED)
 add_subdirectory(geoflow)
 
 set(GF_PLUGIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/geoflow/cmake/gf_plugin.cpp.in)
@@ -14,6 +14,9 @@ include_directories(
 
 add_subdirectory(plugins/gfp-basic3d)
 # add_subdirectory(plugins/gfp-building-reconstruction)
+add_subdirectory(plugins/gfp-gdal)
+# add_subdirectory(plugins/gfp-las)
+add_subdirectory(plugins/gfp-val3dity)
 
 if (WIN32)
   set(CPACK_GENERATOR NSIS)
