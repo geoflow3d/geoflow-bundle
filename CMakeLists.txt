@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 3.13)
+cmake_minimum_required (VERSION 3.21)
 
-project (Geoflow-bundle VERSION 0.0.1)
+project (Geoflow-bundle VERSION 22.2.1)
 # find_package(LASlib REQUIRED)
 add_subdirectory(geoflow)
 
@@ -13,9 +13,9 @@ include_directories(
 # add_definitions(-DGF_SHADER_PATH=\"share\"${GF_SHH_FILE})
 
 add_subdirectory(plugins/gfp-basic3d)
-# add_subdirectory(plugins/gfp-building-reconstruction)
+add_subdirectory(plugins/gfp-building-reconstruction)
 add_subdirectory(plugins/gfp-gdal)
-# add_subdirectory(plugins/gfp-las)
+add_subdirectory(plugins/gfp-las)
 add_subdirectory(plugins/gfp-val3dity)
 
 if (WIN32)
@@ -27,10 +27,10 @@ endif (WIN32)
 set(CPACK_PACKAGE_NAME "Geoflow")
 set(CPACK_PACKAGE_VENDOR "Ravi Peters")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geoflow - Software")
-set(CPACK_PACKAGE_VERSION "0.1.0")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_VERSION "22.2.1")
+set(CPACK_PACKAGE_VERSION_MAJOR "22")
+set(CPACK_PACKAGE_VERSION_MINOR "2")
+set(CPACK_PACKAGE_VERSION_PATCH "1")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Geoflow")
 
 INCLUDE(CPack)
