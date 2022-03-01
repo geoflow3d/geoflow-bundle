@@ -1,10 +1,11 @@
 FROM scratch
-LABEL org.opencontainers.image.authors="b.dukai@tudelft.nl"
-LABEL maintainer.email="b.dukai@tudelft.nl" maintainer.name="Balázs Dukai"
-LABEL description="Tool for reconstructing building models in Level of Detail 1.3"
+LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
+LABEL org.opencontainers.image.vendor="3DGI"
+LABEL org.opencontainers.image.title="lod13tool"
+LABEL org.opencontainers.image.description="Tool for reconstructing building models in Level of Detail 1.3"
 
 COPY --from=geoflow3d/geoflow-bundle-builder:latest /export/ /
-COPY flowcharts/gfc-lod13/runner.json flowcharts/gfc-lod13/reconstruct_one.json /usr/local/geoflow-flowcharts/gfc-lod13
+COPY flowcharts/gfc-lod13/runner.json flowcharts/gfc-lod13/reconstruct_one.json /usr/local/geoflow-flowcharts/gfc-lod13/
 
 ENTRYPOINT ["/usr/local/bin/geof", "/usr/local/geoflow-flowcharts/gfc-lod13/runner.json"]
 CMD ["--help"]
