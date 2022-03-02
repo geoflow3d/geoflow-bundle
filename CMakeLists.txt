@@ -39,13 +39,11 @@ if (WIN32)
   set(CPACK_GENERATOR NSIS)
   set(CPACK_NSIS_MODIFY_PATH ON)
   # set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-  # set(CPACK_NSIS_MUI_ICON ON)
   set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/geoflow/apps/resources/geoflow.ico")
   set(CPACK_NSIS_INSTALLED_ICON_NAME bin\\\\geoflow.exe)
   include(InstallRequiredSystemLibraries)
 
   INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT Libraries)
 endif (WIN32)
-
 
 INCLUDE(CPack)
