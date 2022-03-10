@@ -3,7 +3,7 @@ name: Build a single plugin
 on:
   push:
     branches:
-      - build
+      - build-cmake
     paths-ignore:
       - '**.md'
 
@@ -43,11 +43,11 @@ jobs:
           mkdir build
           cd build
           cmake \
+            -DGFP_WITH_LOD2=OFF \
             -DCMAKE_INSTALL_PREFIX=D:/opt \
             -DGF_PLUGIN_FOLDER=D:/opt/geoflow-plugins \
-            -DGF_BUILD_GUI=OFF \
-            -DCMAKE_BUILD_TYPE=Release \
             -DVCPKG_DEFAULT_TRIPLET=$VCPKG_DEFAULT_TRIPLET \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
             ..
-          ls D:/a/geoflow-bundle/geoflow-bundle/plugins/gfp-gdal/build
+          cmake --build . --config Release
+          cpack -C Release --verbose
