@@ -1,0 +1,53 @@
+name: Build a single plugin
+
+on:
+  push:
+    branches:
+      - build
+    paths-ignore:
+      - '**.md'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    name: ${{ matrix.os }}-${{ github.workflow }}-test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest ]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+            vcpkg_installation_root: C:/vcpkg
+    #            - os: ubuntu-latest
+    #              triplet: x64-linux
+    #            - os: macos-latest
+    #              triplet: x64-osx
+
+    env:
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
+      VCPKG_ROOT: ${{ matrix.vcpkg_installation_root }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+      - name: Run build script
+        run: |
+          mkdir -p D:/opt/geoflow-plugins
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_INSTALL_PREFIX=D:/opt \
+            -DGF_PLUGIN_FOLDER=D:/opt/geoflow-plugins \
+            -DGF_BUILD_GUI=OFF \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DVCPKG_DEFAULT_TRIPLET=$VCPKG_DEFAULT_TRIPLET \
+            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
+            ..
+          ls D:/a/geoflow-bundle/geoflow-bundle/plugins/gfp-gdal/build

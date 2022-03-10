@@ -1,15 +1,26 @@
-#!/bin/zsh
+#!/bin/bash
+
+# !!! For Windows builds, the environment variables VCPKG_DEFAULT_TRIPLET and CMAKE_TOOLCHAIN_FILE need to be set so
+# that CMake can pick them up automatically. !!!
 
 # root directory of this repository
 ROOT_DIR=`pwd`
 
 # where to install geoflow (and also where dependencies can be found)
 # we need to have write permissions!
-INSTALL_PREFIX=/opt
+if [[ "$OSTYPE" == "msys" ]]; then
+  INSTALL_PREFIX=D:/opt
+else
+  INSTALL_PREFIX=/opt
+fi
 
 # where to put the geoflow plugin files
 # we need to have write permissions!
-GF_PLUGIN_FOLDER=/opt/geoflow-plugins
+if [[ "$OSTYPE" == "msys" ]]; then
+  GF_PLUGIN_FOLDER=D:/opt/geoflow-plugins
+else
+  GF_PLUGIN_FOLDER=/opt/geoflow-plugins
+fi
 
 # how many parallel threads to use for building
 N_PARALLEL=`getconf _NPROCESSORS_ONLN`
@@ -21,10 +32,9 @@ set -x
 
 # update git modules
 cd $ROOT_DIR
-git submodule update --init
 
 # create necesary directories if needed
-#mkdir -p "$GF_INSTALL_PREFIX"
+mkdir -p $INSTALL_PREFIX
 mkdir -p "$GF_PLUGIN_FOLDER"
 
 # build and install geoflow and plugins
@@ -35,76 +45,85 @@ cmake .. \
  -DGF_PLUGIN_FOLDER=$GF_PLUGIN_FOLDER \
  -DGF_BUILD_GUI=OFF \
  -DCMAKE_BUILD_TYPE=Release
-cmake --build . --parallel $N_PARALLEL --config Release
-make install
-
-# install GDAL
-if [[ -d "$ROOT_DIR"/dependencies/gdal-3.3.3 ]]
-then
- mkdir -p "$ROOT_DIR"/dependencies
- cd "$ROOT_DIR"/dependencies
- wget https://github.com/OSGeo/gdal/releases/download/v3.3.3/gdal-3.3.3.tar.gz
- tar -zxvf gdal-3.3.3.tar.gz
- cd gdal-3.3.3
- ./configure --prefix=$INSTALL_PREFIX
- make -j$N_PARALLEL install
-fi
-
-# install CGAL
-if [[ -d "$ROOT_DIR"/dependencies/CGAL-5.3 ]]
-then
- cd "$ROOT_DIR"/dependencies
- wget https://github.com/CGAL/cgal/releases/download/v5.3/CGAL-5.3.tar.xz
- tar -xf CGAL-5.3.tar.xz 
- cd CGAL-5.3/
- mkdir build
- cd build/
- cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
- sudo make install -j$N_PARALLEL
-fi
-
-#install LASlib/tools
-if [[ -d "$ROOT_DIR"/dependencies/LAStools ]]
- then
- cd "$ROOT_DIR"/dependencies
- git clone https://github.com/LAStools/LAStools.git
- cd LAStools/
- mkdir build
- cd build/
- cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
- sudo make -j$N_PARALLEL install
-fi
+cmake --build . --parallel $N_PARALLEL --config Release --target install
 
 mkdir -p "$ROOT_DIR"/plugins/gfp-gdal/build
 cd "$ROOT_DIR"/plugins/gfp-gdal/build
 cmake .. \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 cmake --build . --parallel $N_PARALLEL --config Release
-cp gfp_gdal.so $GF_PLUGIN_FOLDER
+ls "$ROOT_DIR"/plugins/gfp-gdal/build
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  cp gfp_gdal.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  cp gfp_gdal.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "msys" ]]; then
+  echo "Lightweight shell and GNU utilities compiled for Windows (part of MinGW)"
+  mkdir -p "$GF_PLUGIN_FOLDER"/gfp-gdal/deps
+  mkdir -p "$GF_PLUGIN_FOLDER"/gfp-gdal/gdal-data
+  mkdir -p "$GF_PLUGIN_FOLDER"/gfp-gdal/proj-data
+  cp Release/gfp_gdal.dll "$GF_PLUGIN_FOLDER"/gfp-gdal/
+  cp "$VCPKG_ROOT"/packages/gdal_x64-windows/share/gdal/* "$GF_PLUGIN_FOLDER"/gfp-gdal/gdal-data/
+  cp "$VCPKG_ROOT"/packages/proj4_x64-windows/share/proj4/* "$GF_PLUGIN_FOLDER"/gfp-gdal/proj-data/
+  cp "$VCPKG_ROOT"/packages/gdal_x64-windows/bin/*.dll "$GF_PLUGIN_FOLDER"/gfp-gdal/deps/
+  cp "$VCPKG_ROOT"/packages/geos_x64-windows/bin/geos_c.dll "$GF_PLUGIN_FOLDER"/gfp-gdal/deps/
+  cp "$VCPKG_ROOT"/packages/geos_x64-windows/bin/geos.dll "$GF_PLUGIN_FOLDER"/gfp-gdal/deps/
+fi
 
 mkdir -p "$ROOT_DIR"/plugins/gfp-val3dity/build
 cd "$ROOT_DIR"/plugins/gfp-val3dity/build
 cmake .. \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 cmake --build . --parallel $N_PARALLEL --config Release
-cp gfp_val3dity.so $GF_PLUGIN_FOLDER
+ls "$ROOT_DIR"/plugins/gfp-val3dity/build
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  cp gfp_val3dity.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  cp gfp_val3dity.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "msys" ]]; then
+  echo "Lightweight shell and GNU utilities compiled for Windows (part of MinGW)"
+  mkdir -p "$GF_PLUGIN_FOLDER"/deps
+  cp Release/gfp_val3dity.dll "$GF_PLUGIN_FOLDER"/gfp-val3dity/
+  cp "$VCPKG_ROOT"/packages/geos_x64-windows/bin/geos_c.dll gfp-val3dity/deps/
+  cp "$VCPKG_ROOT"/packages/geos_x64-windows/bin/geos.dll gfp-val3dity/deps/
+fi
 
 mkdir -p "$ROOT_DIR"/plugins/gfp-basic3d/build
 cd "$ROOT_DIR"/plugins/gfp-basic3d/build
 cmake .. \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 cmake --build . --parallel $N_PARALLEL --config Release
-cp gfp_core_io.so $GF_PLUGIN_FOLDER
+ls "$ROOT_DIR"/plugins/gfp-basic3d/build
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  cp gfp_core_io.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  cp gfp_core_io.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "msys" ]]; then
+  echo "Lightweight shell and GNU utilities compiled for Windows (part of MinGW)"
+  mkdir -p "$GF_PLUGIN_FOLDER"/gfp-core_io
+  cp Release/gfp_core_io.dll "$GF_PLUGIN_FOLDER"/gfp-core_io/
+fi
 
 mkdir -p "$ROOT_DIR"/plugins/gfp-building-reconstruction/build
 cd "$ROOT_DIR"/plugins/gfp-building-reconstruction/build
 cmake .. \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
- -DGFP_WITH_PDAL=OFF
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+  -DGFP_WITH_PDAL=OFF
 cmake --build . --parallel $N_PARALLEL --config Release
-cp gfp_buildingreconstruction.so $GF_PLUGIN_FOLDER
+ls "$ROOT_DIR"/plugins/gfp-building-reconstruction/build
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  cp gfp_buildingreconstruction.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  cp gfp_buildingreconstruction.so $GF_PLUGIN_FOLDER
+elif [[ "$OSTYPE" == "msys" ]]; then
+  echo "Lightweight shell and GNU utilities compiled for Windows (part of MinGW)"
+  mkdir -p "$GF_PLUGIN_FOLDER"/gfp-building-reconstruction/deps
+  cp Release/gfp_buildingreconstruction.dll "$GF_PLUGIN_FOLDER"/gfp-building-reconstruction/
+  cp "$VCPKG_ROOT"/installed/x64-windows/bin/mpfr.dll "$GF_PLUGIN_FOLDER"/gfp-building-reconstruction/deps/
+  cp "$VCPKG_ROOT"/installed/x64-windows/bin/mpir.dll "$GF_PLUGIN_FOLDER"/gfp-building-reconstruction/deps/
+fi
 

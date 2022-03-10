@@ -1,3 +1,13 @@
 # Jetbrains IDE
 .idea
 .run
+
+# VS build dirs
+/geoflow/build/
+/geoflow/out/
+/plugins/*/out/
+/plugins/*/build/
+/.vs/
+
+# Test
+/test_plugin/build/

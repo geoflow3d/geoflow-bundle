@@ -1,0 +1,12 @@
+{
+  "name": "geoflow-bundle",
+  "version": "21.12.0",
+  "dependencies": [
+    "glfw3",
+    {
+      "name": "gdal",
+      "default-features": false,
+      "features": [ "postgresql" ]
+    }
+  ]
+}
