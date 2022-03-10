@@ -1,9 +1,9 @@
-name: test_gdal
+name: Build with CPack
 
 on:
   push:
     branches:
-      - build
+      - build-cmake
     paths-ignore:
       - '**.md'
 
@@ -37,19 +37,15 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
-#      - name: Restore artifacts, or setup vcpkg for building artifacts
-#        uses: lukka/run-vcpkg@v10.1
-#        id: runvcpkg
-#        with:
-#          vcpkgDirectory: ${{ github.workspace }}/buildtools/vcpkg
-#          vcpkgJsonGlob: ./test_plugin/vcpkg.json
-#          runVcpkgInstall: false # Once we have a global CMakeLists, we can let CMake run vcpkg, which is the recommended way by the run-vcpkg action: https://github.com/lukka/CppBuildTasks-Validation/blob/321e621aec7f349c7ae1b05433985dc008978c57/.github/workflows/hosted-ninja-vcpkg_submod-triplet.yml#L57-L63
-#      - name: integrate vcpkg
-#        run: vcpkg integrate install
-      - name: build gdal plugin
+      - name: Build
         run: |
-          cd ./test_plugin
           mkdir build
           cd build
-          cmake ..
-          cmake --build .
+          cmake \
+            -DCMAKE_CXX_FLAGS="-Wno-dev" \
+            -DGFP_WITH_LOD2=OFF \
+            -DVCPKG_DEFAULT_TRIPLET=$VCPKG_DEFAULT_TRIPLET \
+            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
+            ..
+          cmake --build . --config Release
+          cpack -C Release --verbose

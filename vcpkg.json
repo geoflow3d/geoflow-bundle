@@ -3,6 +3,11 @@
   "version": "21.12.0",
   "dependencies": [
     "glfw3",
+    "boost-geometry",
+    "glm",
+    "lastools",
+    "cgal",
+    "nlohman-json",
     {
       "name": "gdal",
       "default-features": false,
