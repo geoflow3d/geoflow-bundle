@@ -37,6 +37,10 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
+      - name: update vcpkg
+        run: |
+          $VCPKG_ROOT/bootstrap-vcpkg.sh
+          vcpkg update
       - name: Build
         run: |
           mkdir build
