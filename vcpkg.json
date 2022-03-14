@@ -7,7 +7,7 @@
     "glm",
     "lastools",
     "cgal",
-    "nlohman-json",
+    "nlohmann-json",
     {
       "name": "gdal",
       "default-features": false,
