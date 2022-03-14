@@ -44,7 +44,6 @@ jobs:
           mkdir build
           cd build
           cmake \
-            -DCMAKE_CXX_FLAGS="-Wno-dev" \
             -DGFP_WITH_LOD2=OFF \
             -DVCPKG_DEFAULT_TRIPLET=$VCPKG_DEFAULT_TRIPLET \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
