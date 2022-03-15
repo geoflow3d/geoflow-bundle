@@ -44,6 +44,7 @@ jobs:
           mkdir build
           cd build
           cmake \
+            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/$VCPKG_DEFAULT_TRIPLET/share/lastools/LASlib \
             -DGFP_WITH_LOD2=OFF \
             -DVCPKG_DEFAULT_TRIPLET=$VCPKG_DEFAULT_TRIPLET \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
