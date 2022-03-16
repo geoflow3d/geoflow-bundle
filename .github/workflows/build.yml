@@ -25,10 +25,16 @@ jobs:
             vcpkg_installation_root: C:/vcpkg
             exe_ext: exe
             exe_os: win64
-    #            - os: ubuntu-latest
-    #              triplet: x64-linux
-    #            - os: macos-latest
-    #              triplet: x64-osx
+          - os: ubuntu-latest
+            triplet: x64-linux
+            vcpkg_installation_root: ${{ VCPKG_INSTALLATION_ROOT }}
+            exe_ext: deb
+            exe_os: ubuntu64
+          - os: macos-latest
+            triplet: x64-osx
+            vcpkg_installation_root: ${{ VCPKG_INSTALLATION_ROOT }}
+            exe_ext: app # ? no clue
+            exe_os: macos
 
     steps:
       - uses: actions/checkout@v2
@@ -39,6 +45,10 @@ jobs:
         run: |
           echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')" >> $GITHUB_ENV
           echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')"
+      - name: Remove vcpkg intallation directory
+        # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
+        # while in linux (and macos) that is the default behaviour.
+        run: rm -rf ${{ matrix.vcpkg_installation_root }}
       - name: Cache vcpkg
         uses: actions/cache@v2
         with:
