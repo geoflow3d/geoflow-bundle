@@ -23,35 +23,37 @@ jobs:
           - os: windows-latest
             triplet: x64-windows
             vcpkg_installation_root: C:/vcpkg
+            exe_ext: exe
+            exe_os: win64
     #            - os: ubuntu-latest
     #              triplet: x64-linux
     #            - os: macos-latest
     #              triplet: x64-osx
-
-    env:
-      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
-      VCPKG_ROOT: ${{ matrix.vcpkg_installation_root }}
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
-      - name: update vcpkg
-        run: $VCPKG_ROOT/bootstrap-vcpkg.sh
       - name: Make directories
-        run: mkdir $GITHUB_WORKSPACE/build
+        run: mkdir ${{ github.workspace }}/build
       - name: CMake build
         run: |
-          cd $GITHUB_WORKSPACE/build
           cmake \
-            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/$VCPKG_DEFAULT_TRIPLET/share/lastools/LASlib \
+            -Dlaslib_DIR=${{ github.workspace }}/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
             -DGFP_WITH_LOD2=OFF \
-            -DVCPKG_DEFAULT_TRIPLET=$VCPKG_DEFAULT_TRIPLET \
-            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
-            ..
-          cmake --build . --config Release
-      - name: CPack
+            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
+            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
+            -S ${{ github.workspace }} \
+            -B ${{ github.workspace }}/build
+          cmake --build ${{ github.workspace }}/build --config Release
+      - name: CPack package executable
         run: |
-          cd $GITHUB_WORKSPACE/build
+          cd ${{ github.workspace }}/build
           cpack -C Release --verbose
+      - name: Upload CPack artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          path: ${{ github.workspace }}/build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          retention-days: 1
