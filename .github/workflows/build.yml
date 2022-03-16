@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   job:
-    name: ${{ matrix.os }}-${{ github.workflow }}-test
+    name: ${{ matrix.os }}-${{ github.workflow }}-build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
