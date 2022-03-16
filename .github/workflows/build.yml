@@ -36,7 +36,7 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
       - name: Make directories
-        run: mkdir ${{ github.workspace }}/build
+        run: mkdir $GITHUB_WORKSPACE/build
       - name: CMake build
         run: |
           cmake \
