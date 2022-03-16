@@ -35,25 +35,27 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
+      # Need to use $GITHUB_WORKSPACE instead of ${{ github.workspace }}, because we are using shell and on windows
+      # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
       - name: Make directories
         run: mkdir $GITHUB_WORKSPACE/build
       - name: CMake build
         run: |
           cmake \
-            -Dlaslib_DIR=${{ github.workspace }}/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
+            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
             -DGFP_WITH_LOD2=OFF \
             -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
             -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
-            -S ${{ github.workspace }} \
-            -B ${{ github.workspace }}/build
+            -S $GITHUB_WORKSPACE \
+            -B $GITHUB_WORKSPACE/build
           cmake --build ${{ github.workspace }}/build --config Release
       - name: CPack package executable
         run: |
-          cd ${{ github.workspace }}/build
+          cd $GITHUB_WORKSPACE/build
           cpack -C Release --verbose
       - name: Upload CPack artifact
         uses: actions/upload-artifact@v3
         with:
           name: Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
-          path: ${{ github.workspace }}/build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          path: $GITHUB_WORKSPACE/build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           retention-days: 1
