@@ -27,12 +27,12 @@ jobs:
             exe_os: win64
           - os: ubuntu-latest
             triplet: x64-linux
-            vcpkg_installation_root: ${{ github.VCPKG_INSTALLATION_ROOT }}
+            vcpkg_installation_root: ${{ runner.VCPKG_INSTALLATION_ROOT }}
             exe_ext: deb
             exe_os: ubuntu64
           - os: macos-latest
             triplet: x64-osx
-            vcpkg_installation_root: ${{ github.VCPKG_INSTALLATION_ROOT }}
+            vcpkg_installation_root: ${{ runner.VCPKG_INSTALLATION_ROOT }}
             exe_ext: app # ? no clue
             exe_os: macos
 
@@ -54,6 +54,8 @@ jobs:
         with:
           path: ${{ matrix.vcpkg_installation_root }}
           key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
+      - name: Refresh vcpkg
+        run: vcpkg update && vcpkg list
       # Need to use $GITHUB_WORKSPACE instead of ${{ github.workspace }}, because we are using shell and on windows
       # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
       - name: Make directories
