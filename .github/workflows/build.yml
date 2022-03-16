@@ -27,12 +27,12 @@ jobs:
             exe_os: win64
           - os: ubuntu-latest
             triplet: x64-linux
-            vcpkg_installation_root: ${{ VCPKG_INSTALLATION_ROOT }}
+            vcpkg_installation_root: ${{ env.VCPKG_INSTALLATION_ROOT }}
             exe_ext: deb
             exe_os: ubuntu64
           - os: macos-latest
             triplet: x64-osx
-            vcpkg_installation_root: ${{ VCPKG_INSTALLATION_ROOT }}
+            vcpkg_installation_root: ${{ env.VCPKG_INSTALLATION_ROOT }}
             exe_ext: app # ? no clue
             exe_os: macos
 
