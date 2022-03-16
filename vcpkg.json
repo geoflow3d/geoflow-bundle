@@ -3,16 +3,6 @@
   "version": "22.2.1",
   "dependencies": [
     "glfw3",
-    "boost-geometry",
-    "glm",
-    "lastools",
-    "cgal",
-    "eigen3",
-    "nlohmann-json",
-    {
-      "name": "gdal",
-      "default-features": false,
-      "features": [ "postgresql" ]
-    }
+    "nlohmann-json"
   ]
 }

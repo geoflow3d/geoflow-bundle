@@ -11,11 +11,11 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
-add_subdirectory(plugins/gfp-basic3d)
-add_subdirectory(plugins/gfp-building-reconstruction)
-add_subdirectory(plugins/gfp-gdal)
-add_subdirectory(plugins/gfp-las)
-add_subdirectory(plugins/gfp-val3dity)
+#add_subdirectory(plugins/gfp-basic3d)
+#add_subdirectory(plugins/gfp-building-reconstruction)
+#add_subdirectory(plugins/gfp-gdal)
+#add_subdirectory(plugins/gfp-las)
+#add_subdirectory(plugins/gfp-val3dity)
 
 set(CPACK_PACKAGE_NAME "Geoflow")
 set(CPACK_PACKAGE_VENDOR "3DGI")
