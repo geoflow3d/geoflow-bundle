@@ -46,14 +46,14 @@ jobs:
           echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')" >> $GITHUB_ENV
           echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')"
       - name: Remove vcpkg installation directory
-        if: ${{ runner.os }} == Windows
+        if: runner.os == 'Windows'
         # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
         # while in linux (and macos) that is the default behaviour.
         run: rm -rf ${{ matrix.vcpkg_installation_root }}
       - name: Cache vcpkg
         uses: actions/cache@v2
         with:
-          path: ${{ matrix.vcpkg_installation_root }}
+          path: ${{ matrix.vcpkg_installation_root }}/*
           key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
       - name: Refresh vcpkg
         run: ${{ matrix.vcpkg_installation_root }}/bootstrap-vcpkg.sh
