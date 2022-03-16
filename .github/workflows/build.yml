@@ -49,7 +49,7 @@ jobs:
         if: runner.os == 'Windows'
         # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
         # while in linux (and macos) that is the default behaviour.
-        run: rm -rf ${{ matrix.vcpkg_installation_root }}
+        run: rm -rf ${{ matrix.vcpkg_installation_root }}/*
       - name: Cache vcpkg
         uses: actions/cache@v2
         with:
