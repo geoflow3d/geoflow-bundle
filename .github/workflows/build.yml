@@ -50,11 +50,15 @@ jobs:
         # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
         # while in linux (and macos) that is the default behaviour.
         run: rm -rf ${{ matrix.vcpkg_installation_root }}/*
+      - name: ls pre
+        run: ls ${{ matrix.vcpkg_installation_root }}
       - name: Cache vcpkg
         uses: actions/cache@v2
         with:
           path: ${{ matrix.vcpkg_installation_root }}/*
           key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
+      - name: ls post
+        run: ls ${{ matrix.vcpkg_installation_root }}
       - name: Refresh vcpkg
         run: ${{ matrix.vcpkg_installation_root }}/bootstrap-vcpkg.sh
       # Need to use $GITHUB_WORKSPACE instead of ${{ github.workspace }}, because we are using shell and on windows
