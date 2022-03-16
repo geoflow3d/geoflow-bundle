@@ -25,42 +25,49 @@ jobs:
             vcpkg_installation_root: C:/vcpkg
             exe_ext: exe
             exe_os: win64
-          - os: ubuntu-latest
-            triplet: x64-linux
-            vcpkg_installation_root: /usr/local/share/vcpkg
-            exe_ext: deb
-            exe_os: ubuntu
-          - os: macos-latest
-            triplet: x64-osx
-            vcpkg_installation_root: /usr/local/share/vcpkg
-            exe_ext: app # ? no clue
-            exe_os: macos
+#          - os: ubuntu-latest
+#            triplet: x64-linux
+#            vcpkg_installation_root: /usr/local/share/vcpkg
+#            exe_ext: deb
+#            exe_os: ubuntu
+#          - os: macos-latest
+#            triplet: x64-osx
+#            vcpkg_installation_root: /usr/local/share/vcpkg
+#            exe_ext: app # ? no clue
+#            exe_os: macos
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
-      - name: Get vcpkg version
-        run: |
-          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')" >> $GITHUB_ENV
-          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')"
-      - name: Remove vcpkg installation directory
-        if: runner.os == 'Windows'
-        # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
-        # while in linux (and macos) that is the default behaviour.
-        run: rm -rf ${{ matrix.vcpkg_installation_root }}/*
-      - name: ls pre
-        run: ls ${{ matrix.vcpkg_installation_root }}
-      - name: Cache vcpkg
-        uses: actions/cache@v2
-        with:
-          path: ${{ matrix.vcpkg_installation_root }}/*
-          key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
-      - name: ls post
-        run: ls ${{ matrix.vcpkg_installation_root }}
-      - name: Refresh vcpkg
-        run: ${{ matrix.vcpkg_installation_root }}/bootstrap-vcpkg.sh
+# The problem with caching vcpkg in this way as below, is that when the cache is restored to C:/vcpkg (on Win), for
+# some reason vcpkg doesn't recongize that there are already packages installed and it re-installes everything anyway.
+# Additionally, restoring the cache is problematic on Win, because tar on Win doesn't allow to overwrite the target
+# directory by default, therefore the cache is not restored.
+# The vcpkg github action manages to get the cache working for vcpkg, that could be worth investigating. However,
+# the vcpkg github action has other issues, because it conflicts somehow with the global vcpkg installation and
+# therefore it cannot find gdal with using the find_package() directive.
+#      - name: Get vcpkg version
+#        run: |
+#          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')" >> $GITHUB_ENV
+#          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')"
+#      - name: Remove vcpkg installation directory
+#        if: runner.os == 'Windows'
+#        # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
+#        # while in linux (and macos) that is the default behaviour.
+#        run: rm -rf ${{ matrix.vcpkg_installation_root }}/*
+#      - name: ls pre
+#        run: ls ${{ matrix.vcpkg_installation_root }}
+#      - name: Cache vcpkg
+#        uses: actions/cache@v2
+#        with:
+#          path: ${{ matrix.vcpkg_installation_root }}/*
+#          key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
+#      - name: ls post
+#        run: ls ${{ matrix.vcpkg_installation_root }}
+#      - name: Refresh vcpkg
+#        run: ${{ matrix.vcpkg_installation_root }}/bootstrap-vcpkg.sh
       # Need to use $GITHUB_WORKSPACE instead of ${{ github.workspace }}, because we are using shell and on windows
       # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
       - name: Make directories
