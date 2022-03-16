@@ -35,6 +35,15 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
+      - name: Get vcpkg version
+        run: |
+          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')" >> $GITHUB_ENV
+          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')"
+      - name: Cache vcpkg
+        uses: actions/cache@v2
+        with:
+          path: ${{ matrix.vcpkg_installation_root }}
+          key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
       # Need to use $GITHUB_WORKSPACE instead of ${{ github.workspace }}, because we are using shell and on windows
       # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
       - name: Make directories
