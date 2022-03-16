@@ -57,5 +57,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
-          path: $GITHUB_WORKSPACE/build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          path: build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           retention-days: 1
