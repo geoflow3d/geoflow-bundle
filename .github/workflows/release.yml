@@ -24,16 +24,16 @@ jobs:
             vcpkg_installation_root: C:/vcpkg
             exe_ext: exe
             exe_os: win64
-#          - os: ubuntu-latest
-#            triplet: x64-linux
-#            vcpkg_installation_root: /usr/local/share/vcpkg
-#            exe_ext: deb
-#            exe_os: ubuntu
-#          - os: macos-latest
-#            triplet: x64-osx
-#            vcpkg_installation_root: /usr/local/share/vcpkg
-#            exe_ext: app # ? no clue
-#            exe_os: macos
+          - os: ubuntu-latest
+            triplet: x64-linux
+            vcpkg_installation_root: /usr/local/share/vcpkg
+            exe_ext: deb
+            exe_os: ubuntu
+          - os: macos-latest
+            triplet: x64-osx
+            vcpkg_installation_root: /usr/local/share/vcpkg
+            exe_ext: app # ? no clue
+            exe_os: macos
 
     steps:
       - uses: actions/checkout@v2
@@ -101,7 +101,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: Geoflow-*
           path: build_artifact/
       - name: Create release and upload artifact
         uses: softprops/action-gh-release@v1
