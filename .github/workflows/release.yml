@@ -101,11 +101,14 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           path: build_artifact/
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: build_artifact
       - name: Create release and upload artifact
         uses: softprops/action-gh-release@v1
 #        if: startsWith(github.ref, 'refs/tags/')
         with:
           name: Geoflow ${{ github.ref }}
-          files: build_artifact/Geoflow-*
+          files: ${{ github.workspace }}/build_artifact/Geoflow-*
           draft: true
           prerelease: true
