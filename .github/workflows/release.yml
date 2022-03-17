@@ -112,3 +112,4 @@ jobs:
           files: ${{ github.workspace }}/build_artifact/Geoflow-*
           draft: true
           prerelease: true
+          fail_on_unmatched_files: true
