@@ -1,4 +1,4 @@
-name: Build with CPack
+name: Build and Release
 
 on:
   push:
@@ -12,8 +12,8 @@ defaults:
     shell: bash
 
 jobs:
-  job:
-    name: ${{ matrix.os }}-${{ github.workflow }}
+  build:
+    name: Build-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -72,23 +72,42 @@ jobs:
       # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
       - name: Make directories
         run: mkdir $GITHUB_WORKSPACE/build
-      - name: CMake build
-        run: |
-          cmake \
-            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
-            -DGFP_WITH_LOD2=OFF \
-            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
-            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
-            -S $GITHUB_WORKSPACE \
-            -B $GITHUB_WORKSPACE/build
-          cmake --build $GITHUB_WORKSPACE/build --config Release
-      - name: CPack package executable
-        run: |
-          cd $GITHUB_WORKSPACE/build
-          cpack -C Release --verbose
+#      - name: CMake build
+#        run: |
+#          cmake \
+#            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
+#            -DGFP_WITH_LOD2=OFF \
+#            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
+#            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
+#            -S $GITHUB_WORKSPACE \
+#            -B $GITHUB_WORKSPACE/build
+#          cmake --build $GITHUB_WORKSPACE/build --config Release
+#      - name: CPack package executable
+#        run: |
+#          cd $GITHUB_WORKSPACE/build
+#          cpack -C Release --verbose
+      - name: test
+        run: cat build/Geoflow-22.2.1-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
       - name: Upload CPack artifact
         uses: actions/upload-artifact@v3
         with:
           name: Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           path: build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           retention-days: 1
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Geoflow-*
+          path: build_artifact/
+      - name: Create release and upload artifact
+        uses: softprops/action-gh-release@v1
+#        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Geoflow ${{ github.ref }}
+          files: build_artifact/*
+          draft: true
+          prerelease: true
