@@ -86,12 +86,12 @@ jobs:
 #          cd $GITHUB_WORKSPACE/build
 #          cpack -C Release --verbose
       - name: test
-        run: touch build/Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+        run: touch build/Geoflow-22.2.1-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
       - name: Upload CPack artifact
         uses: actions/upload-artifact@v3
         with:
           name: Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
-          path: build/Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          path: build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           retention-days: 1
 
   release:
@@ -109,7 +109,7 @@ jobs:
 #        if: startsWith(github.ref, 'refs/tags/')
         with:
           name: Geoflow ${{ github.ref }}
-          files: ${{ github.workspace }}/build_artifact/Geoflow-*
+          files: ${{ github.workspace }}/build_artifact/Geoflow-*/Geoflow-*
           draft: true
           prerelease: true
           fail_on_unmatched_files: true
