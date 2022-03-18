@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y.%m.%d')"
       - uses: actions/checkout@v2
         with:
           submodules: recursive
@@ -27,6 +30,6 @@ jobs:
           file: ./base.dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:$(date +%Y.%m.%d)
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:${{ steps.date.outputs.date }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest,mode=max
