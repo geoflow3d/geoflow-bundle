@@ -3,6 +3,20 @@
   "version": "22.2.1",
   "dependencies": [
     "glfw3",
-    "nlohmann-json"
-  ]
+    { "name": "boost-geometry", "version>=": "1.77.0" },
+    "glm",
+    { "name":  "lastools", "version>=": "2020-05-09" },
+    { "name": "cgal", "version>=":  "5.3" },
+    "eigen3",
+    "nlohmann-json",
+    { "name": "proj4", "version>=": "8.0.0" },
+    { "name": "geos", "version>=": "3.10.0" },
+    {
+      "name": "gdal",
+      "default-features": false,
+      "features": [ "postgresql" ],
+      "version>=": "3.4.1"
+    }
+  ],
+  "builtin-baseline": "c64c0fdac572ca43ea5ae018fc408ddced50d5b1"
 }
