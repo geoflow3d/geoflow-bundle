@@ -35,4 +35,4 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:${{ steps.date.outputs.date }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest,mode=max
+          cache-to: type=inline
