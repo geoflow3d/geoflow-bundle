@@ -1,9 +1,10 @@
 FROM alpine:3.15
+ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
 LABEL org.opencontainers.image.title="geoflow-bundle-base"
 LABEL org.opencontainers.image.description="Base image for building the geoflow-bundle"
-LABEL org.opencontainers.image.version="2022.03.18"
+LABEL org.opencontainers.image.version=$VERSION
 LABEL org.opencontainers.image.licenses="MIT"
 ARG JOBS
 

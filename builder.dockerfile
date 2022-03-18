@@ -1,8 +1,10 @@
 FROM geoflow3d/geoflow-bundle-base:latest
+ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
 LABEL org.opencontainers.image.title="geoflow-bundle-builder"
 LABEL org.opencontainers.image.description="Builder image for building the geoflow executable with all of its plugins for building reconstruction."
+LABEL org.opencontainers.image.version=$VERSION
 
 ARG JOBS
 ARG INSTALL_PREFIX="/usr/local"

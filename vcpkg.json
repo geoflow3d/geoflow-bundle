@@ -1,6 +1,6 @@
 {
   "name": "geoflow-bundle",
-  "version": "22.2.1",
+  "version": "2022.03.18",
   "dependencies": [
     "glfw3",
     { "name": "boost-geometry", "version>=": "1.77.0" },

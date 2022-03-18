@@ -24,16 +24,16 @@ jobs:
             vcpkg_installation_root: C:/vcpkg
             exe_ext: exe
             exe_os: win64
-          - os: ubuntu-latest
-            triplet: x64-linux
-            vcpkg_installation_root: /usr/local/share/vcpkg
-            exe_ext: deb
-            exe_os: ubuntu
-          - os: macos-latest
-            triplet: x64-osx
-            vcpkg_installation_root: /usr/local/share/vcpkg
-            exe_ext: dmg # ? no clue
-            exe_os: macos
+#          - os: ubuntu-latest
+#            triplet: x64-linux
+#            vcpkg_installation_root: /usr/local/share/vcpkg
+#            exe_ext: deb
+#            exe_os: ubuntu
+#          - os: macos-latest
+#            triplet: x64-osx
+#            vcpkg_installation_root: /usr/local/share/vcpkg
+#            exe_ext: dmg # ? no clue
+#            exe_os: macos
 
     steps:
       - uses: actions/checkout@v2
@@ -71,39 +71,75 @@ jobs:
       # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
       - name: Make directories
         run: mkdir $GITHUB_WORKSPACE/build
-#      - name: CMake build
-#        run: |
-#          cmake \
-#            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
-#            -DGFP_WITH_LOD2=OFF \
-#            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
-#            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
-#            -S $GITHUB_WORKSPACE \
-#            -B $GITHUB_WORKSPACE/build
-#          cmake --build $GITHUB_WORKSPACE/build --config Release
-#      - name: CPack package executable
-#        run: |
-#          cd $GITHUB_WORKSPACE/build
-#          cpack -C Release --verbose
-      - name: test
-        run: echo "The problem with caching vcpkg in this way as below, is that when the cache is restored to C:/vcpkg (on Win), for" > build/Geoflow-22.2.1-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+      - name: CMake build
+        run: |
+          cmake \
+            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
+            -DGFP_WITH_LOD2=OFF \
+            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
+            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
+            -S $GITHUB_WORKSPACE \
+            -B $GITHUB_WORKSPACE/build
+          cmake --build $GITHUB_WORKSPACE/build --config Release
+      - name: CPack package executable
+        run: |
+          cd $GITHUB_WORKSPACE/build
+          cpack -C Release --verbose
       - name: Upload CPack artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Geoflow-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          name: Geoflow-${{ matrix.exe_os }}
           path: build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           retention-days: 1
 
   build-docker:
     runs-on: ubuntu-latest
     steps:
-      - name: build docker image
-        run: echo "The problem with caching vcpkg in this way as below, is that when the cache is restored to C:/vcpkg (on Win), for" > lod13tool-${{ github.ref_name }}-docker.txt
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Pull base image
+        run: | 
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest
+          docker image tag ${{ secrets.DOCKER_HUB_USERNAME }}/geoflow-bundle-base:latest geoflow3d/geoflow-bundle-base:latest
+      - name: Build builder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./builder.dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            JOBS=2
+            VERSION=${{ github.ref_name }}
+          push: false
+          load: true
+          tags: geoflow3d/geoflow-bundle-builder:latest, geoflow3d/geoflow-bundle-builder:${{ github.ref_name }}
+      - name: Build lod13tool
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./lod13tool.dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            JOBS=2
+            VERSION=${{ github.ref_name }}
+          push: false
+          load: false
+          tags: geoflow3d/lod13tool:${{ github.ref_name }}
+          outputs: type=docker,dest=lod13tool-${{ github.ref_name }}-docker.tar
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
-          name: lod13tool-docker.txt
-          path: lod13tool-${{ github.ref_name }}-docker.txt
+          name: lod13tool-docker
+          path: lod13tool-${{ github.ref_name }}-docker.tar
           retention-days: 1
 
   release:
