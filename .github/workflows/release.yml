@@ -98,12 +98,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build docker image
-        run: echo "The problem with caching vcpkg in this way as below, is that when the cache is restored to C:/vcpkg (on Win), for" > build/lod13tool-${{ github.ref_name }}-docker.txt
+        run: echo "The problem with caching vcpkg in this way as below, is that when the cache is restored to C:/vcpkg (on Win), for" > lod13tool-${{ github.ref_name }}-docker.txt
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
           name: lod13tool-docker.txt
-          path: build/lod13tool-${{ github.ref_name }}-docker.txt
+          path: lod13tool-${{ github.ref_name }}-docker.txt
           retention-days: 1
 
   release:
