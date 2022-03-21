@@ -33,21 +33,22 @@ jobs:
           file: ./test-builder.dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: false
-          load: false
-          target: geoflow3d/test-builder:latest
-#      - name: inspect
-#        run: |
-#          docker image inspect geoflow3d/test-builder:latest
-      - name: Build lod13tool
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./test-app.dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: false
-          load: false
-          tags: geoflow3d/test-app:${{ github.ref_name }}
-          outputs: type=docker,dest=test-app-1-docker.tar
+          load: true
+      - name: inspect
+        run: |
+          docker build -t geoflow3d/test-app:1 -f test-builder.dockerfile
+          docker image save --output test-app-1-docker.tar geoflow3d/test-app:1
+
+#      - name: Build lod13tool
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: ./
+#          file: ./test-app.dockerfile
+#          builder: ${{ steps.buildx.outputs.name }}
+#          push: false
+#          load: false
+#          tags: geoflow3d/test-app:${{ github.ref_name }}
+#          outputs: type=docker,dest=test-app-1-docker.tar
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
