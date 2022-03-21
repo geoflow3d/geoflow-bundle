@@ -1,0 +1,53 @@
+name: Test docker build
+
+on:
+  push:
+    branches:
+      - build-cmake
+    paths-ignore:
+      - '**.md'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: false
+          token: ${{ secrets.GH_PAT }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build builder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./test-builder.dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: false
+          load: true
+          tags: geoflow3d/test-builder:latest, geoflow3d/test-builder:${{ github.ref_name }}
+      - name: Build lod13tool
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./test-app.dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: false
+          load: false
+          tags: geoflow3d/test-app:${{ github.ref_name }}
+          outputs: type=docker,dest=test-app-1-docker.tar
+      - name: Upload docker image
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-app-docker
+          path: test-app-1-docker.tar
+          retention-days: 1
