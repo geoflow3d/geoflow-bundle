@@ -117,20 +117,11 @@ jobs:
             VERSION=${{ github.ref_name }}
           push: false
           load: true
-          tags: geoflow3d/geoflow-bundle-builder:latest, geoflow3d/geoflow-bundle-builder:${{ github.ref_name }}
+          tags: geoflow3d/geoflow-bundle-builder:latest
       - name: Build lod13tool
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./lod13tool.dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          build-args: |
-            JOBS=2
-            VERSION=${{ github.ref_name }}
-          push: false
-          load: false
-          tags: geoflow3d/lod13tool:${{ github.ref_name }}
-          outputs: type=docker,dest=lod13tool-${{ github.ref_name }}-docker.tar
+        run: |
+          docker build --tag geoflow3d/lod13tool:${{ github.ref_name }} --file lod13tool.dockerfile .
+          docker save --output lod13tool-${{ github.ref_name }}-docker.tar
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
