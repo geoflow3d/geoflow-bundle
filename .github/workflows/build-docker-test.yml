@@ -36,7 +36,7 @@ jobs:
           load: true
       - name: inspect
         run: |
-          docker build -t geoflow3d/test-app:1 -f test-builder.dockerfile
+          docker build -t geoflow3d/test-app:1 -f test-app.dockerfile
           docker image save --output test-app-1-docker.tar geoflow3d/test-app:1
 
 #      - name: Build lod13tool
