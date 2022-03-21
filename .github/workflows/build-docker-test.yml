@@ -33,7 +33,7 @@ jobs:
           file: ./test-builder.dockerfile
           push: false
           load: true
-          tag: geoflow3d/test-builder:latest
+          tags: geoflow3d/test-builder:latest
       - name: inspect
         run: |
           docker image inspect geoflow3d/test-builder:latest
