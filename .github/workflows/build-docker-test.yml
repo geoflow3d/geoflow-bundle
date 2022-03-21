@@ -39,7 +39,7 @@ jobs:
         run: |
           docker image inspect geoflow3d/test-builder:latest
           docker build --tag geoflow3d/test-app:1 --file test-app.dockerfile .
-          docker image save --output test-app-1-docker.tar geoflow3d/test-app:1
+          docker image save --output test-app-${{ github.ref_name }}-docker.tar geoflow3d/test-app:1
 
 #      - name: Build lod13tool
 #        uses: docker/build-push-action@v2
