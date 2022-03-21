@@ -31,6 +31,7 @@ jobs:
         with:
           context: ./
           file: ./test-builder.dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           push: false
           load: true
           tags: geoflow3d/test-builder:latest
