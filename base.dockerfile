@@ -331,6 +331,7 @@ RUN apk --update add --virtual .json-deps \
         gcc \
         g++ \
         file \
+        cmake \
         linux-headers && \
     cd /tmp && \
     wget -O json-${JSON_VERSION}.tar.gz https://github.com/nlohmann/json/archive/refs/tags/v${JSON_VERSION}.tar.gz && \
