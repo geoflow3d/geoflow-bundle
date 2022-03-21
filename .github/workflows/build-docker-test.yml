@@ -35,6 +35,9 @@ jobs:
           push: false
           load: true
           tags: geoflow3d/test-builder:latest, geoflow3d/test-builder:${{ github.ref_name }}
+      - name: inspect
+        run: |
+          docker image inspect geoflow3d/test-builder:latest
       - name: Build lod13tool
         uses: docker/build-push-action@v2
         with:
