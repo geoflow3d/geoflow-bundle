@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.21)
 
-project (Geoflow-bundle VERSION 22.2.1)
+project (Geoflow-bundle VERSION 2022.03.18)
 
 add_subdirectory(geoflow)
 
