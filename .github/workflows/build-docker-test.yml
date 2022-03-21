@@ -24,14 +24,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
       - name: Build builder
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./test-builder.dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
           push: false
           load: true
           tags: geoflow3d/test-builder:latest, geoflow3d/test-builder:${{ github.ref_name }}
@@ -43,9 +40,8 @@ jobs:
         with:
           context: ./
           file: ./test-app.dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
           push: false
-          load: true
+          load: false
           tags: geoflow3d/test-app:${{ github.ref_name }}
           outputs: type=docker,dest=test-app-1-docker.tar
       - name: Upload docker image
