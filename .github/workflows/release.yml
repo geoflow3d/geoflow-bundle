@@ -121,7 +121,7 @@ jobs:
       - name: Build lod13tool
         run: |
           docker build --tag geoflow3d/lod13tool:${{ github.ref_name }} --file lod13tool.dockerfile .
-          docker save --output lod13tool-${{ github.ref_name }}-docker.tar
+          docker save --output lod13tool-${{ github.ref_name }}-docker.tar geoflow3d/lod13tool:${{ github.ref_name }}
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
