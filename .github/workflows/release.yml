@@ -80,7 +80,10 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
             -S $GITHUB_WORKSPACE \
             -B $GITHUB_WORKSPACE/build
-          cmake --build $GITHUB_WORKSPACE/build --config Release
+          cmake \
+            --build $GITHUB_WORKSPACE/build \
+            --config Release \
+            --parallel 2
       - name: CPack package executable
         run: |
           cd $GITHUB_WORKSPACE/build
