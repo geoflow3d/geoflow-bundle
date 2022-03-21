@@ -34,6 +34,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: false
           load: true
+          tag: geoflow3d/test-builder:latest
       - name: inspect
         run: |
           docker build --tag geoflow3d/test-app:1 --file test-app.dockerfile .
