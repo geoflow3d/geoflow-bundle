@@ -1,0 +1,156 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - '202[2-9].[0-2]+.[0-9]+'
+    paths-ignore:
+      - '**.md'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-exe:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest ]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+            vcpkg_installation_root: C:/vcpkg
+            exe_ext: exe
+            exe_os: win64
+#          - os: ubuntu-latest
+#            triplet: x64-linux
+#            vcpkg_installation_root: /usr/local/share/vcpkg
+#            exe_ext: deb
+#            exe_os: ubuntu
+#          - os: macos-latest
+#            triplet: x64-osx
+#            vcpkg_installation_root: /usr/local/share/vcpkg
+#            exe_ext: dmg # ? no clue
+#            exe_os: macos
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+# The problem with caching vcpkg in this way as below, is that when the cache is restored to C:/vcpkg (on Win), for
+# some reason vcpkg doesn't recongize that there are already packages installed and it re-installes everything anyway.
+# Additionally, restoring the cache is problematic on Win, because tar on Win doesn't allow to overwrite the target
+# directory by default, therefore the cache is not restored.
+# The vcpkg github action manages to get the cache working for vcpkg, that could be worth investigating. However,
+# the vcpkg github action has other issues, because it conflicts somehow with the global vcpkg installation and
+# therefore it cannot find gdal with using the find_package() directive.
+#      - name: Get vcpkg version
+#        run: |
+#          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')" >> $GITHUB_ENV
+#          echo "vcpkg_version=$(vcpkg version | grep -o '[0-9].*')"
+#      - name: Remove vcpkg installation directory
+#        if: runner.os == 'Windows'
+#        # There is a bug in the cache action and tar under windows cannot overwrite existing directories by default,
+#        # while in linux (and macos) that is the default behaviour.
+#        run: rm -rf ${{ matrix.vcpkg_installation_root }}/*
+#      - name: ls pre
+#        run: ls ${{ matrix.vcpkg_installation_root }}
+#      - name: Cache vcpkg
+#        uses: actions/cache@v2
+#        with:
+#          path: ${{ matrix.vcpkg_installation_root }}/*
+#          key: ${{ runner.os }}-${{ env.vcpkg_version }}-${{ hashFiles('vcpkg.json') }}
+#      - name: ls post
+#        run: ls ${{ matrix.vcpkg_installation_root }}
+#      - name: Refresh vcpkg
+#        run: ${{ matrix.vcpkg_installation_root }}/bootstrap-vcpkg.sh
+      # Need to use $GITHUB_WORKSPACE instead of ${{ github.workspace }}, because we are using shell and on windows
+      # the ${{ github.workspace }} has back-slashes, while $GITHUB_WORKSPACE has forward-slashes
+      - name: Make directories
+        run: mkdir $GITHUB_WORKSPACE/build
+      - name: CMake build
+        run: |
+          cmake \
+            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
+            -DGFP_WITH_LOD2=OFF \
+            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
+            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
+            -S $GITHUB_WORKSPACE \
+            -B $GITHUB_WORKSPACE/build
+          cmake \
+            --build $GITHUB_WORKSPACE/build \
+            --config Release \
+            --parallel 2
+      - name: CPack package executable
+        run: |
+          cd $GITHUB_WORKSPACE/build
+          cpack -C Release --verbose
+      - name: Upload CPack artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Geoflow-${{ matrix.exe_os }}
+          path: build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          retention-days: 1
+
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build builder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./builder.dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            JOBS=2
+            VERSION=${{ github.ref_name }}
+          push: false
+          load: true
+          tags: geoflow3d/geoflow-bundle-builder:latest
+      - name: Build lod13tool
+        run: |
+          docker build --tag geoflow3d/lod13tool:${{ github.ref_name }} --file lod13tool.dockerfile .
+          docker save --output lod13tool-${{ github.ref_name }}-docker.tar geoflow3d/lod13tool:${{ github.ref_name }}
+      - name: Upload docker image
+        uses: actions/upload-artifact@v3
+        with:
+          name: lod13tool-docker
+          path: lod13tool-${{ github.ref_name }}-docker.tar
+          retention-days: 1
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-exe, build-docker]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: build_artifact/
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: build_artifact
+      - name: Create release and upload artifact
+# Release with an application bundle fails, because (.app) is actually a directory.
+# As a workaround, the .app file can be zipped.
+        uses: softprops/action-gh-release@v1
+#        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Geoflow ${{ github.ref_name }}
+          files: ${{ github.workspace }}/build_artifact/*/*
+          draft: true
+          prerelease: true
+          fail_on_unmatched_files: true
+          token: ${{ secrets.GH_PAT }}

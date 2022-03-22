@@ -1,3 +1,4 @@
-buildtools
 .vs
 .run
+.github
+build

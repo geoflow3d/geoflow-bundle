@@ -1,8 +1,10 @@
-FROM geoflow3d/geoflow-bundle-base:latest
+FROM balazsdukai/geoflow-bundle-base:latest
+ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
 LABEL org.opencontainers.image.title="geoflow-bundle-builder"
 LABEL org.opencontainers.image.description="Builder image for building the geoflow executable with all of its plugins for building reconstruction."
+LABEL org.opencontainers.image.version=$VERSION
 
 ARG JOBS
 ARG INSTALL_PREFIX="/usr/local"
@@ -22,6 +24,8 @@ COPY .gitmodules $root
 #
 # 1 Install Geoflow
 #
+# Need to build geoflow in the project directory instead of a 'build' directory, because for some reason cmake takes
+# the build dir as root, but it should take the project dir as root. This is not really how it should be.
 COPY geoflow $geoflow_dir
 RUN apk --update add --virtual .geoflow-deps \
         make \
@@ -32,15 +36,13 @@ RUN apk --update add --virtual .geoflow-deps \
         linux-headers && \
     cd $geoflow_dir && \
     git submodule update --init --recursive && \
-    mkdir $geoflow_dir/build && \
-    cd $geoflow_dir/build && \
-    cmake .. \
+    cmake . \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DGF_PLUGIN_FOLDER=$GF_PLUGIN_FOLDER \
         -DGF_BUILD_GUI=OFF \
         -DCMAKE_BUILD_TYPE=Release && \
     cmake \
-        --build $geoflow_dir/build \
+        --build $geoflow_dir \
         --parallel $JOBS \
         --config Release && \
     make install && \

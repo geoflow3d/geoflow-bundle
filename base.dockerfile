@@ -1,8 +1,11 @@
 FROM alpine:3.15
+ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
 LABEL org.opencontainers.image.title="geoflow-bundle-base"
-LABEL org.opencontainers.image.description="Base image for building the geoflow-bundle"
+LABEL org.opencontainers.image.description="Base image for building the geoflow-bundle."
+LABEL org.opencontainers.image.version=$VERSION
+LABEL org.opencontainers.image.licenses="MIT"
 ARG JOBS
 
 #
@@ -318,3 +321,31 @@ RUN apk --update add \
     rm -rf /user/local/man && \
     for i in /usr/local/lib/libgdal*; do strip -s $i 2>/dev/null || /bin/true; done && \
     for i in /usr/local/bin/gdal*; do strip -s $i 2>/dev/null || /bin/true; done
+
+#
+# 9 Install nlohmann JSON
+#
+ARG JSON_VERSION=3.10.5
+RUN apk --update add --virtual .json-deps \
+        make \
+        gcc \
+        g++ \
+        file \
+        cmake \
+        linux-headers && \
+    cd /tmp && \
+    wget -O json-${JSON_VERSION}.tar.gz https://github.com/nlohmann/json/archive/refs/tags/v${JSON_VERSION}.tar.gz && \
+    tar xzf json-${JSON_VERSION}.tar.gz && \
+    rm -f json-${JSON_VERSION}.tar.gz && \
+    cd json-${JSON_VERSION} && \
+    mkdir build && \
+    cd build && \
+    cmake \
+      -DJSON_BuildTests=OFF \
+      .. && \
+    make && \
+    make install && \
+    cd ~ && \
+    apk del .json-deps && \
+    rm -rf /tmp/* && \
+    rm -rf /user/local/man
