@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - v*
+      - '202[2-9].[0-2]+.[0-9]+'
     paths-ignore:
       - '**.md'
 
