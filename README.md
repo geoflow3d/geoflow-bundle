@@ -24,3 +24,8 @@ docker run \
   geoflow3d/lod13tool:latest \
   -c config.toml
 ```
+
+## Running on windows
+* Download the latest installer from the [Release page](https://github.com/geoflow3d/geoflow-bundle/releases), eg `Geoflow-2022.03.22-win64.exe`.
+* Run the installer.
+* Launch Geoflow from the start menu. You can now load flowcharts eg the one for [LoD1.3 building reconstruction](https://github.com/geoflow3d/gfc-lod13)
