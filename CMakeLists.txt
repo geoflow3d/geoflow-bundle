@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.21)
 
-project (Geoflow-bundle VERSION 2022.03.22)
+project (Geoflow-bundle VERSION 2022.04.01)
 
 add_subdirectory(geoflow)
 
@@ -20,9 +20,9 @@ add_subdirectory(plugins/gfp-val3dity)
 set(CPACK_PACKAGE_NAME "Geoflow")
 set(CPACK_PACKAGE_VENDOR "3DGI")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geoflow - Software")
-set(CPACK_PACKAGE_VERSION "2022.03.22")
+set(CPACK_PACKAGE_VERSION "2022.04.01")
 set(CPACK_PACKAGE_VERSION_MAJOR "2022")
-set(CPACK_PACKAGE_VERSION_MINOR "03")
+set(CPACK_PACKAGE_VERSION_MINOR "04")
 set(CPACK_PACKAGE_VERSION_PATCH "22")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Geoflow")
 set(CPACK_PACKAGE_DESCRIPTION "Geoflow is a geospatial 3D ETL tool.")
