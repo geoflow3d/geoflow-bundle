@@ -95,6 +95,52 @@ jobs:
           path: build/Geoflow-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
           retention-days: 1
 
+  build-exe-cli:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest ]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+            vcpkg_installation_root: C:/vcpkg
+            exe_ext: exe
+            exe_os: win64
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+      # Same problem as in build-exe. See above.
+      - name: Make directories
+        run: mkdir $GITHUB_WORKSPACE/build
+      - name: CMake build
+        run: |
+          cmake \
+            -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
+            -DGFP_WITH_LOD2=OFF \
+            -DGF_BUILD_GUI=OFF \
+            -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
+            -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
+            -S $GITHUB_WORKSPACE \
+            -B $GITHUB_WORKSPACE/build
+          cmake \
+            --build $GITHUB_WORKSPACE/build \
+            --config Release \
+            --parallel 2
+      - name: CPack package executable
+        run: |
+          cd $GITHUB_WORKSPACE/build
+          cpack -C Release --verbose
+      - name: Upload CPack artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Geoflow-cli-${{ matrix.exe_os }}
+          path: build/Geoflow-cli-*-${{ matrix.exe_os }}.${{ matrix.exe_ext }}
+          retention-days: 1
+
   build-docker:
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +180,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [build-exe, build-docker]
+    needs: [build-exe, build-exe-cli, build-docker]
     steps:
       - uses: actions/download-artifact@v3
         with:
