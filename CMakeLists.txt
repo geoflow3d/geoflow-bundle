@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.21)
 
 project (Geoflow-bundle VERSION 2022.04.01)
 
+option(GF_BUILD_GUI "Build the GUI components of geoflow" TRUE)
 add_subdirectory(geoflow)
 
 set(GF_PLUGIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/geoflow/cmake/gf_plugin.cpp.in)
