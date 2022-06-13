@@ -75,7 +75,6 @@ jobs:
         run: |
           cmake \
             -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
-            -DGFP_WITH_LOD2=OFF \
             -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
             -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
             -S $GITHUB_WORKSPACE \
@@ -120,7 +119,6 @@ jobs:
         run: |
           cmake \
             -Dlaslib_DIR=$GITHUB_WORKSPACE/build/vcpkg_installed/${{ matrix.triplet }}/share/lastools/LASlib \
-            -DGFP_WITH_LOD2=OFF \
             -DGF_BUILD_GUI=OFF \
             -DVCPKG_DEFAULT_TRIPLET=${{ matrix.triplet }} \
             -DCMAKE_TOOLCHAIN_FILE=${{ matrix.vcpkg_installation_root }}/scripts/buildsystems/vcpkg.cmake \
