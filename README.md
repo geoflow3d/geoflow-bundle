@@ -174,4 +174,4 @@ Make sure that you have prepared your input data according to the *Requirements 
 
 ## Citation 
 
-If you use the software in scientific publications, please see CITATION.cff
+If you use the software in scientific publications, please see CITATION.bib
