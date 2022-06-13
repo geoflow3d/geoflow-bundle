@@ -6,7 +6,7 @@
 
 ## What does it do?
 
-+ Takes a point cloud and 2D building polygon and generates a 3D model of the building. It is a fully automated process, there is no manual intervention.
++ Takes the point cloud and the 2D polygon of a *single* building and generates a 3D model of the building. It is a fully automated process, there is no manual intervention.
 + It is possible to tweak the reconstruction parameters to adjust it a little to different input data qualities.
 + Outputs a model as a simple extrusion, in LoD1.2, LoD1.3, LoD2.2. See [the refined Levef of Details by the 3D geoinformation research group ](https://3d.bk.tudelft.nl/lod/).
 + For LoD2.2, it generates the model with as much detail in the roof structure as there is in the point cloud.
@@ -27,7 +27,7 @@
 
 ### 2D building polygon
 
-+ A simple 2D polygon.
++ A simple 2D polygon of a single building.
 + Preferably roofprint, since the input point cloud was also acquired from the air.
 + Well aligned with the point cloud.
 + In GeoPackage or ESRI Shapefile format, or a PostGIS database connection.
@@ -125,8 +125,8 @@ Alternatively, you can also set the global paramters in a TOML configuration fil
 
 ```toml
 # contents of config.toml
-input_footprint=/bla/file.gpkg
-building_identifier=gid
+input_footprint="/bla/file.gpkg"
+building_identifier="gid"
 ```
 
 ```shell
@@ -145,7 +145,32 @@ Thus, a parameter set with `set` has the highest priority and overrides the valu
 
 ### Building reconstruction
 
-The flowchart of the building reconstruction is in ...
+The flowchart of the building reconstruction is in `flowcharts/gfc-brecon/single/reconstruction.json`.
+You need to use this flowchart to generate the 3D building models.
+
+Navigate to the `flowcharts/gfc-brecon` directory, then run:
+
+```shell
+geof run single/reconstruct.json
+```
+
+By default, it will use the test data set that is provided in the `gfc-brecon` repository and generate the model below.
+The output is saved to the `gfc-brecon/output` directory.
+The `single/reconstruct.json` flowchart generates the output in CityJSON, Wavefront OBJ and GeoPackage formats.
+
+It is possible to save the model to a PostgreSQL database instead of a GeoPackage. 
+To write to a database, you need to pass a [GDAL-style database connection string](https://gdal.org/drivers/vector/pg.html#connecting-to-a-database) and set the output format to `PostgreSQL`.
+
+```shell
+geof run single/reconstruct.json set --output_vector2d="PG:dbname=test" --output_vector2d_format="PostgreSQL"
+```
+
+![model](docs/img/model.png)
+
+
+To run the reconstruction with your own data, set the global parameters as explained above.
+Make sure that you have prepared your input data according to the *Requirements on the input data*.
+
 
 ## Citation 
 
