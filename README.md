@@ -98,11 +98,11 @@ Subcommands:
 ### Globals
 
 A flowchart can contain some parameters that are set for the whole flowchart. These are called *globals*
-To see the global parameters of a flowchart and their explanation:
+To see the global parameters of a flowchart and their explanation pass the `--globals` option to the `run` subcommand.
 ```shell
 geof run flowchart.json --globals
 ```
-Which will print something like:
+An example of the flowchart globals printed by `--globals`:
 ```shell
 Available globals:
  > building_identifier [Unique identifier attribute present in input footprint source]
@@ -114,11 +114,34 @@ Available globals:
 ...
 ```
 
-You can set the value of a flowchart global parameter from the commandline with the `set` command.
+You can set the value of one or more flowchart global parameters from the commandline with the `set` command.
+For instance, set the `building_identifier` and `input_footprint` parameters.
 
 ```shell
-geof run flowchart.json set input_footprint=/some/path/file.gpkg
+geof run flowchart.json set --input_footprint=/some/path/file.gpkg --building_identifier=gid
 ```
+
+Alternatively, you can also set the global paramters in a TOML configuration file.
+
+```toml
+# contents of config.toml
+input_footprint=/bla/file.gpkg
+building_identifier=gid
+```
+
+```shell
+geof run flowchart.json set --config config.toml
+```
+
+#### Order of priority
+
+It is possible to set the global parameters in three different places and their order of priority is as follows:
+
+1. parameters passed in the command line with `set`
+2. parameters set in a TOML configuration file
+3. parameters stored in the flowchart
+
+Thus, a parameter set with `set` has the highest priority and overrides the value set in any other location.
 
 ### Building reconstruction
 
