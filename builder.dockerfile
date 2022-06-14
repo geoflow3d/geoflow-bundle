@@ -64,8 +64,8 @@ RUN apk --update add --virtual .gdal-deps \
         linux-headers && \
     cd $plugins_dir/gfp-gdal && \
     git submodule update --init --recursive && \
-    mkdir $plugins_dir/gfp-gdal/build && \
-    cd $plugins_dir/gfp-gdal/build && \
+    mkdir $plugins_dir/gfp-gdal/build_docker && \
+    cd $plugins_dir/gfp-gdal/build_docker && \
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DCMAKE_BUILD_TYPE=Release && \
@@ -94,8 +94,8 @@ RUN apk --update add --virtual .val3dity-deps \
         linux-headers && \
     cd $plugins_dir/gfp-val3dity && \
     git submodule update --init --recursive && \
-    mkdir $plugins_dir/gfp-val3dity/build && \
-    cd $plugins_dir/gfp-val3dity/build && \
+    mkdir $plugins_dir/gfp-val3dity/build_docker && \
+    cd $plugins_dir/gfp-val3dity/build_docker && \
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DCMAKE_BUILD_TYPE=Release && \
@@ -121,8 +121,8 @@ RUN apk --update add --virtual .basic3d-deps \
         linux-headers && \
     cd $plugins_dir/gfp-basic3d && \
     git submodule update --init --recursive && \
-    mkdir $plugins_dir/gfp-basic3d/build && \
-    cd $plugins_dir/gfp-basic3d/build && \
+    mkdir $plugins_dir/gfp-basic3d/build_docker && \
+    cd $plugins_dir/gfp-basic3d/build_docker && \
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DCMAKE_BUILD_TYPE=Release && \
@@ -151,13 +151,13 @@ RUN apk --update add --virtual .building-reconstruction-deps \
         linux-headers && \
     cd $plugins_dir/gfp-building-reconstruction && \
     git submodule update --init --recursive && \
-    mkdir $plugins_dir/gfp-building-reconstruction/build && \
-    cd $plugins_dir/gfp-building-reconstruction/build && \
+    mkdir $plugins_dir/gfp-building-reconstruction/build_docker && \
+    cd $plugins_dir/gfp-building-reconstruction/build_docker && \
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DCMAKE_BUILD_TYPE=Release \
         -DGFP_WITH_PDAL=OFF \
-        -DGFP_WITH_LOD2=OFF && \
+        -DGFP_WITH_LOD2=ON && \
     cmake \
         --build . \
         --parallel $JOBS \
@@ -173,8 +173,8 @@ RUN apk --update add --virtual .building-reconstruction-deps \
 COPY plugins/gfp-las $plugins_dir/gfp-las
 RUN cd $plugins_dir/gfp-las && \
     git submodule update --init --recursive && \
-    mkdir $plugins_dir/gfp-las/build && \
-    cd $plugins_dir/gfp-las/build && \
+    mkdir $plugins_dir/gfp-las/build_docker && \
+    cd $plugins_dir/gfp-las/build_docker && \
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
         -DCMAKE_BUILD_TYPE=Release && \
@@ -221,4 +221,4 @@ RUN bash /tmp/strip-docker-image-export \
     -f /usr/local/geoflow-plugins/gfp_gdal.so \
     -f /usr/local/geoflow-plugins/gfp_val3dity.so \
     -f /usr/local/geoflow-plugins/gfp_las.so
-RUN mkdir --parents "/export/usr/local/geoflow-flowcharts/gfc-lod13" "/export/usr/local/geoflow-flowcharts/gfc-lod22"
+RUN mkdir --parents "/export/usr/local/geoflow-flowcharts/gfc-lod13" "/export/usr/local/geoflow-flowcharts/gfc-brecon"
