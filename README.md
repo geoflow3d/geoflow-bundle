@@ -49,41 +49,41 @@ $ git clone --recurse-submodules https://github.com/geoflow3d/geoflow-bundle.git
 
 Two things are needed for running the reconstruction on some input data.
 1. A *flowchart* that contains the logic of the reconstruction and describes how the various components (plugins and nodes) connect. The *flowchart* is a JSON file.
-2. The *geoflow* executable (`geof`), which runs (`run`) the logic in flowchart.
+2. The *geoflow* executable (`geof`), which executes the logic in flowchart.
 
 ```shell
-geof run flowchart.json
+geof flowchart.json
 ```
 
-Use `geof --help` to see the help message of each command.
+Use `geof --help` to see the detailed help.
 
 ```shell
-Geoflow
-Usage: /opt/geoflow/bin/geof [OPTIONS] [SUBCOMMAND]
+Usage: 
+   geof [-v | -p | -n | -h]
+   geof <flowchart_file> [-V] [-g] [-w] [-c <file>] [--GLOBAL1=A --GLOBAL2=B ...]
 
 Options:
-  -h,--help                   Print this help message and exit
-  --verbose                   Print verbose messages
-[Option Group: Info]
-  Debug information
-  Options:
-    -v,--version                Print version information
-    -p,--plugins                List available plugins
-    -n,--nodes                  List available nodes from plugins that are loaded
+   -v, --version                Print version information
+   -p, --list-plugins           List available plugins
+   -n, --list-nodes             List available nodes for plugins that are loaded
+   -h, --help                   Print this help message
 
-Subcommands:
-  run                         Load and run flowchart
-  set                         Set flowchart globals (comes after run)
+   <flowchart_file>             JSON flowchart file
+   -V, --verbose                Print verbose messages during flowchart execution
+   -g, --list-globals           List available flowchart globals. Cancels flowchart execution
+   -w, --workdir                Set working directory to folder containing flowchart file
+   -c <file>, --config <file>   Read globals from TOML config file
+   --GLOBAL1=A --GLOBAL2=B ...  Specify globals for flowchart (list availale globals with -g)
 ```
 
 ### Globals
 
 A flowchart can contain some parameters that are set for the whole flowchart. These are called *globals*
-To see the global parameters of a flowchart and their explanation pass the `--globals` option to the `run` subcommand.
+To see the global parameters of a flowchart and their explanation pass the `--list-globals` option.
 ```shell
-geof run flowchart.json --globals
+geof flowchart.json --list-globals
 ```
-An example of the flowchart globals printed by `--globals`:
+An example of the flowchart globals printed by `--list-globals`:
 ```shell
 Available globals:
  > building_identifier [Unique identifier attribute present in input footprint source]
@@ -95,14 +95,14 @@ Available globals:
 ...
 ```
 
-You can set the value of one or more flowchart global parameters from the commandline with the `set` command.
+You can set the value of one or more flowchart global parameters from the commandline.
 For instance, set the `building_identifier` and `input_footprint` parameters.
 
 ```shell
-geof run flowchart.json set --input_footprint=/some/path/file.gpkg --building_identifier=gid
+geof flowchart.json --input_footprint=/some/path/file.gpkg --building_identifier=gid
 ```
 
-Alternatively, you can also set the global paramters in a TOML configuration file.
+Alternatively, you can also set the global parameters in a TOML configuration file.
 
 ```toml
 # contents of config.toml
@@ -111,18 +111,18 @@ building_identifier="gid"
 ```
 
 ```shell
-geof run flowchart.json set --config config.toml
+geof flowchart.json --config config.toml
 ```
 
 #### Order of priority
 
 It is possible to set the global parameters in three different places and their order of priority is as follows:
 
-1. parameters passed in the command line with `set`
+1. parameters passed in the command line
 2. parameters set in a TOML configuration file
 3. parameters stored in the flowchart
 
-Thus, a parameter set with `set` has the highest priority and overrides the value set in any other location.
+Thus, a parameter set in the command line has the highest priority and overrides the value set in any other location.
 
 ### Building reconstruction
 
@@ -132,7 +132,7 @@ You need to use this flowchart to generate the 3D building models.
 Navigate to the `flowcharts/gfc-brecon` directory, then run:
 
 ```shell
-geof run single/reconstruct.json
+geof single/reconstruct.json
 ```
 
 By default, it will use the test data set that is provided in the `gfc-brecon` repository and generate the model below.
@@ -143,7 +143,7 @@ It is possible to save the model to a PostgreSQL database instead of a GeoPackag
 To write to a database, you need to pass a [GDAL-style database connection string](https://gdal.org/drivers/vector/pg.html#connecting-to-a-database) and set the output format to `PostgreSQL`.
 
 ```shell
-geof run single/reconstruct.json set --output_vector2d="PG:dbname=test" --output_vector2d_format="PostgreSQL"
+geof single/reconstruct.json --output_vector2d="PG:dbname=test" --output_vector2d_format="PostgreSQL"
 ```
 
 ![model](docs/img/model.png)
@@ -181,7 +181,7 @@ docker run \
 #### All LoD-s
 
 The following is an example for running the building reconstruction on the test data.
-No need to pass `run flowchart.json`, because the image already contains the flowchart.
+No need to pass the flowchart, because the image already contains it.
 
 ```shell
 docker run \
@@ -189,7 +189,6 @@ docker run \
   --network=host \
   -v "flowcharts/gfc-brecon:/data" \
   geoflow3d/brecon:latest \
-  set \
   --input_footprint=/data/test-data/wippolder.gpkg \
   --input_pointcloud=/data/test-data/wippolder.las \
   --output_cityjson=/data/output_docker/model.json \
