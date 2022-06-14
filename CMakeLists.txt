@@ -22,8 +22,13 @@ add_subdirectory(plugins/gfp-val3dity)
 install(FILES flowcharts/gfc-brecon/single/reconstruct.json DESTINATION share/geoflow/gfc-brecon/single/)
 
 # install shortcut script for building reconstruction
-configure_file(cmake/lod22-reconstruct.sh.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh)
-install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh DESTINATION bin RENAME lod22-reconstruct)
+if (WIN32)
+  configure_file(cmake/lod22-reconstruct.bat.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.bat)
+  install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.bat DESTINATION bin)
+else()
+  configure_file(cmake/lod22-reconstruct.sh.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh)
+  install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh DESTINATION bin RENAME lod22-reconstruct)
+endif(WIN32)
 
 set(CPACK_PACKAGE_NAME "Geoflow")
 set(CPACK_PACKAGE_VENDOR "3DGI")
