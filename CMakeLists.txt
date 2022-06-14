@@ -19,10 +19,10 @@ add_subdirectory(plugins/gfp-las)
 add_subdirectory(plugins/gfp-val3dity)
 
 # install flowchart file
-install(FILES flowchart/gfc-brecon/single/reconstruct.json DESTINATION share/geoflow)
+install(FILES flowcharts/gfc-brecon/single/reconstruct.json DESTINATION share/geoflow/gfc-brecon/single/)
 
 # install shortcut script for building reconstruction
-configure_file(cmake/lod22-reconstruct.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh)
+configure_file(cmake/lod22-reconstruct.sh.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh DESTINATION bin RENAME lod22-reconstruct)
 
 set(CPACK_PACKAGE_NAME "Geoflow")
