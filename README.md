@@ -45,25 +45,6 @@ It will probably be easiest to use one of the binary packages on the Release pag
 $ git clone --recurse-submodules https://github.com/geoflow3d/geoflow-bundle.git
 ```
 
-### Running with Docker (TO UPDATE AFTER NEW EXE)
-
-The building reconstruction tool for LoD1.3 models is packaged into a docker image, `geoflow3d/lod13tool`.
-An example command to run the reconstruction in a new container from the image and write the results to a database on the host:
-
-```shell
-docker run \
-  --rm \
-  --network=host \
-  -v /my/dir/data:/data/in_out_data \
-  geoflow3d/lod13tool:latest \
-  -c config.toml
-```
-
-### Running on windows (TO UPDATE AFTER NEW EXE)
-* Download the latest installer from the [Release page](https://github.com/geoflow3d/geoflow-bundle/releases), eg `Geoflow-2022.03.22-win64.exe`.
-* Run the installer.
-* Launch Geoflow from the start menu. You can now load flowcharts eg the one for [LoD1.3 building reconstruction](https://github.com/geoflow3d/gfc-lod13)
-
 ## Usage
 
 Two things are needed for running the reconstruction on some input data.
@@ -171,6 +152,57 @@ geof run single/reconstruct.json set --output_vector2d="PG:dbname=test" --output
 To run the reconstruction with your own data, set the global parameters as explained above.
 Make sure that you have prepared your input data according to the *Requirements on the input data*.
 
+### Running the building reconstruction with Docker
+
+The flowcharts that are needed for the building reconstruction are packaged into the docker images for convenience.
+Thus, you only need to update the global parameters when running a container so that the correct input and output paths are set.
+
+If you write the results back to the docker host, make sure that the target directory is writable by all.
+For instance in Linux you would do:
+
+```shell
+mkdir output_docker
+chmod a+w output_docker
+```
+
+#### LoD1.3 only
+The building reconstruction tool for LoD1.3 models is packaged into a docker image, `geoflow3d/lod13tool`.
+An example command to run the reconstruction in a new container from the image and write the results to a database on the host:
+
+```shell
+docker run \
+  --rm \
+  --network=host \
+  -v /my/dir/data:/data/in_out_data \
+  geoflow3d/lod13tool:latest \
+  --config config.toml
+```
+
+#### All LoD-s
+
+The following is an example for running the building reconstruction on the test data.
+No need to pass `run flowchart.json`, because the image already contains the flowchart.
+
+```shell
+docker run \
+  --rm \
+  --network=host \
+  -v "flowcharts/gfc-brecon:/data" \
+  geoflow3d/brecon:latest \
+  set \
+  --input_footprint=/data/test-data/wippolder.gpkg \
+  --input_pointcloud=/data/test-data/wippolder.las \
+  --output_cityjson=/data/output_docker/model.json \
+  --output_vector2d=/data/output_docker/model_2d.gpkg \
+  --output_obj_lod12=/data/output_docker/model_lod12.obj \
+  --output_obj_lod13=/data/output_docker/model_lod13.obj \
+  --output_obj_lod22=/data/output_docker/model_lod22.obj
+```
+
+### Running on windows (TO UPDATE AFTER NEW EXE)
+* Download the latest installer from the [Release page](https://github.com/geoflow3d/geoflow-bundle/releases), eg `Geoflow-2022.03.22-win64.exe`.
+* Run the installer.
+* Launch Geoflow from the start menu. You can now load flowcharts eg the one for [LoD1.3 building reconstruction](https://github.com/geoflow3d/gfc-lod13)
 
 ## Citation 
 
