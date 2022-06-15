@@ -23,6 +23,7 @@ install(FILES flowcharts/gfc-brecon/single/reconstruct.json DESTINATION share/ge
 
 # install shortcut script for building reconstruction
 if (WIN32)
+  string(REPLACE "/" "\\" CMAKE_INSTALL_PREFIX_WINSLASH ${CMAKE_INSTALL_PREFIX})
   configure_file(cmake/lod22-reconstruct.bat.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.bat)
   install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.bat DESTINATION bin)
 else()
