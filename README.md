@@ -129,6 +129,9 @@ Thus, a parameter set in the command line has the highest priority and overrides
 The flowchart of the building reconstruction is in `flowcharts/gfc-brecon/single/reconstruction.json`.
 You need to use this flowchart to generate the 3D building models.
 
+Download some test data from `https://data.3dgi.xyz/geoflow-test-data`.
+The following instruction works if you have placed the test data sets into a `test-data` directory in the `flowcharts/gfc-brecon` directory.
+
 Navigate to the `flowcharts/gfc-brecon` directory, then run:
 
 ```shell
