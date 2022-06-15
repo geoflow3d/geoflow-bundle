@@ -102,7 +102,7 @@ For instance, set the `building_identifier` and `input_footprint` parameters.
 geof flowchart.json --input_footprint=/some/path/file.gpkg --building_identifier=gid
 ```
 
-Alternatively, you can also set the global parameters in a TOML configuration file.
+In addition to the command line, you can also set the global parameters in a TOML configuration file.
 
 ```toml
 # contents of config.toml
@@ -132,10 +132,18 @@ You need to use this flowchart to generate the 3D building models.
 Navigate to the `flowcharts/gfc-brecon` directory, then run:
 
 ```shell
-geof single/reconstruct.json
+geof single/reconstruct.json \
+  --input_footprint=test-data/wippolder.gpkg \
+  --input_pointcloud=test-data/wippolder.las \
+  --config single/config.toml
 ```
 
-By default, it will use the test data set that is provided in the `gfc-brecon` repository and generate the model below.
+Here we override the default values that are set in the flowchart. 
+The `input_footprint` and `input_pointcloud` are passed directly in the command line.
+In addition, the `r_optimisation_data_term` is read from the config file `single/config.toml`.
+
+Combining the command line parameters and the config file allows you to keep the parameters that don't change with each model in the configuration file, while passing input and output parameters in the command line.
+
 The output is saved to the `gfc-brecon/output` directory.
 The `single/reconstruct.json` flowchart generates the output in CityJSON, Wavefront OBJ and GeoPackage formats.
 
@@ -147,7 +155,6 @@ geof single/reconstruct.json --output_vector2d="PG:dbname=test" --output_vector2
 ```
 
 ![model](docs/img/model.png)
-
 
 To run the reconstruction with your own data, set the global parameters as explained above.
 Make sure that you have prepared your input data according to the *Requirements on the input data*.
