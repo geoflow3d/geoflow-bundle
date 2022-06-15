@@ -9,5 +9,5 @@ LABEL org.opencontainers.image.version=$VERSION
 COPY --from=geoflow3d/geoflow-bundle-builder:latest /export/ /
 COPY flowcharts/gfc-brecon/single/reconstruct.json /usr/local/geoflow-flowcharts/gfc-brecon/
 
-ENTRYPOINT ["/usr/local/bin/geof", "run", "/usr/local/geoflow-flowcharts/gfc-brecon/reconstruct.json"]
+ENTRYPOINT ["/usr/local/bin/geof", "/usr/local/geoflow-flowcharts/gfc-brecon/reconstruct.json"]
 CMD ["--help"]
