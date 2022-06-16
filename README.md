@@ -154,7 +154,7 @@ It is possible to save the model to a PostgreSQL database instead of a GeoPackag
 To write to a database, you need to pass a [GDAL-style database connection string](https://gdal.org/drivers/vector/pg.html#connecting-to-a-database) and set the output format to `PostgreSQL`.
 
 ```shell
-geof single/reconstruct.json --output_vector2d="PG:dbname=test" --output_vector2d_format="PostgreSQL"
+geof single/reconstruct.json --output_ogr="PG:dbname=test" --output_ogr_format="PostgreSQL"
 ```
 
 ![model](docs/img/model.png)
@@ -202,7 +202,7 @@ docker run \
   --input_footprint=/data/test-data/wippolder.gpkg \
   --input_pointcloud=/data/test-data/wippolder.las \
   --output_cityjson=/data/output_docker/model.json \
-  --output_vector2d=/data/output_docker/model_2d.gpkg \
+  --output_ogr=/data/output_docker/model_2d.gpkg \
   --output_obj_lod12=/data/output_docker/model_lod12.obj \
   --output_obj_lod13=/data/output_docker/model_lod13.obj \
   --output_obj_lod22=/data/output_docker/model_lod22.obj
