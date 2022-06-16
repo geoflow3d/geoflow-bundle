@@ -4,25 +4,33 @@
 
 *A tool for reconstructing 3D building models from point clouds, fully automated, with high-detail. Free and open-source.*
 
+## TLDR;
+[Install](https://github.com/geoflow3d/geoflow-bundle/releases) and run from your terminal
+```shell
+lod22-reconstruct --input_footprint=my_footprint.gpkg --input_pointcloud=my_pointcloud.las
+```
+and enjoy the output files that are created.
+
 ## What does it do?
 
 + Takes the point cloud and the 2D polygon of a *single* building and generates a 3D model of the building. It is a fully automated process, there is no manual intervention.
 + It is possible to tweak the reconstruction parameters to adjust it a little to different input data qualities.
 + Outputs a model as a simple extrusion, in LoD1.2, LoD1.3, LoD2.2. See [the refined Levef of Details by the 3D geoinformation research group ](https://3d.bk.tudelft.nl/lod/).
 + For LoD2.2, it generates the model with as much detail in the roof structure as there is in the point cloud.
-+ For LoD2.2, it generates the required [Semantics](https://www.cityjson.org/specs/1.1.1/#semantics-of-geometric-primitives) for the surfaces.
-+ It writes to Wavefront OBJ, GeoPackage, CityJSON and a PostgreSQL database.
++ It generates the required [Semantics](https://www.cityjson.org/specs/1.1.1/#semantics-of-geometric-primitives) for the surfaces.
++ It outputs to formats like Wavefront OBJ, GeoPackage, CityJSON or a PostgreSQL database.
 
 ## Requirements on the input data
 
 ### Point cloud
 
-+ Acquired through aerial scanning, either Lidar or Dense Image Matching. But Lidar is preferred, because it is often of higher quality. Thus point clouds of building facades from mobile mapping surveys are not supported.
-+ The fewer outliers the better. Here is where Lidar point clouds outperform those from DiM, because the latter often results in "wobbly" surfaces.
-+ Classified, with at least a *ground* and a *building* class.
++ Acquired through aerial scanning, either Lidar or Dense Image Matching. But Lidar is preferred, because it is often of higher quality. Thus point clouds with only building facades eg. mobile mapping surveys are not supported.
++ The fewer outliers the better.
++ Classified, with at least *ground* and *building* classes.
 + Has sufficient point density. We achieve good results with 8-10 pts/m2 in the [3D BAG](https://3dbag.nl).
 + Well aligned with the 2D building polygon.
-+ It is cropped to the extent of the 2D building polygon. It is okay to leave some buffer.
++ Do include some ground points around the building so that the software can determine the ground floor elevation.
++ Pointcloud is automatically cropped to the extent of the 2D building polygon. 
 + In `.LAS` or `.LAZ` format.
 
 ### 2D building polygon
@@ -34,18 +42,32 @@
 
 ## Repository structure
 
-This repository is a collection of components that form the software that does the building reconstruction.
+This repository is a collection of components that together form the software that does the building reconstruction.
 The components are added as git submodules, and they are parts, plugins of the *geoflow* software. You can read more about geoflow in the Wiki of this repository.
 
 ## Installation
 
-It will probably be easiest to use one of the binary packages on the Release page (docker, windows installer) as explained below. Only in case you want to compile the software from scratch you need to clone this repository with all of its submodules, eg. use the command:
+### Using the binary packages
+It will probably be easiest to use one of the binary packages on the Release page (docker, windows installer) as explained below. 
 
-```
-$ git clone --recurse-submodules https://github.com/geoflow3d/geoflow-bundle.git
+### Building from source
+In case you can not or do not want to use the binary packages, you can also build everything from source. This is only recommended if you know what you are doing, ie. have experience in compiling software.
+
+> **Note:** macOS is currently untested
+
+So only in case you want to compile the software from scratch you need to clone this repository with all of its submodules, eg:
+
+```shell
+git clone --recurse-submodules https://github.com/geoflow3d/geoflow-bundle.git
+mkdir build && cd build
+cmake ..
+cmake --build . --config Release --parallel 4
+cmake --install .
 ```
 
-## Usage
+Before compiling this software you will need to install the various dependencies. Please refer to the README's of the respective submodules in this repository for more information.
+
+## General usage of `geof`
 
 Two things are needed for running the reconstruction on some input data.
 1. A *flowchart* that contains the logic of the reconstruction and describes how the various components (plugins and nodes) connect. The *flowchart* is a JSON file.
@@ -59,7 +81,7 @@ Use `geof --help` to see the detailed help.
 
 ```shell
 Usage: 
-   geof [-v | -p | -n | -h]
+   geof [-v|-p|-n|-h]
    geof <flowchart_file> [-V] [-g] [-w] [-c <file>] [--GLOBAL1=A --GLOBAL2=B ...]
 
 Options:
@@ -128,27 +150,28 @@ Thus, a parameter set in the command line has the highest priority and overrides
 
 The flowchart of the building reconstruction is in `flowcharts/gfc-brecon/single/reconstruction.json`.
 You need to use this flowchart to generate the 3D building models.
+However for you convenience we automatically install this flowchart and the script `lod22-reconstruct` to easily run it.
+The command `lod22-reconstruct` (`lod22-reconstruct.bat` on windows) is an alias for `geof flowcharts/gfc-brecon/single/reconstruction.json`..
 
-Download some test data from `https://data.3dgi.xyz/geoflow-test-data`.
-The following instruction works if you have placed the test data sets into a `test-data` directory in the `flowcharts/gfc-brecon` directory.
-
-Navigate to the `flowcharts/gfc-brecon` directory, then run:
+Download the [test data](https://data.3dgi.xyz/geoflow-test-data/wippolder.zip) and unzip into a `test-data` directory.
+Then run:
 
 ```shell
-geof single/reconstruct.json \
+lod22-reconstruct \
   --input_footprint=test-data/wippolder.gpkg \
   --input_pointcloud=test-data/wippolder.las \
-  --config single/config.toml
+  --config test-data/config.toml
 ```
 
 Here we override the default values that are set in the flowchart. 
 The `input_footprint` and `input_pointcloud` are passed directly in the command line.
-In addition, the `r_optimisation_data_term` is read from the config file `single/config.toml`.
+In addition, the `input_footprint_select=47` (to select the 47th feature from the input footprint file) is read from the config file `config.toml`.
 
 Combining the command line parameters and the config file allows you to keep the parameters that don't change with each model in the configuration file, while passing input and output parameters in the command line.
 
-The output is saved to the `gfc-brecon/output` directory.
-The `single/reconstruct.json` flowchart generates the output in CityJSON, Wavefront OBJ and GeoPackage formats.
+By default the output is saved to the `output` directory.
+By default the output is generated in CityJSON, Wavefront OBJ and GeoPackage formats.
+To omit an output format leave the corresponding output parameter empty (see `lod22-reconstruct -g`).
 
 It is possible to save the model to a PostgreSQL database instead of a GeoPackage. 
 To write to a database, you need to pass a [GDAL-style database connection string](https://gdal.org/drivers/vector/pg.html#connecting-to-a-database) and set the output format to `PostgreSQL`.
@@ -175,19 +198,6 @@ mkdir output_docker
 chmod a+w output_docker
 ```
 
-#### LoD1.3 only
-The building reconstruction tool for LoD1.3 models is packaged into a docker image, `geoflow3d/lod13tool`.
-An example command to run the reconstruction in a new container from the image and write the results to a database on the host:
-
-```shell
-docker run \
-  --rm \
-  --network=host \
-  -v /my/dir/data:/data/in_out_data \
-  geoflow3d/lod13tool:latest \
-  --config config.toml
-```
-
 #### All LoD-s
 
 The following is an example for running the building reconstruction on the test data.
@@ -208,10 +218,21 @@ docker run \
   --output_obj_lod22=/data/output_docker/model_lod22.obj
 ```
 
-### Running on windows (TO UPDATE AFTER NEW EXE)
-* Download the latest installer from the [Release page](https://github.com/geoflow3d/geoflow-bundle/releases), eg `Geoflow-2022.03.22-win64.exe`.
-* Run the installer.
-* Launch Geoflow from the start menu. You can now load flowcharts eg the one for [LoD1.3 building reconstruction](https://github.com/geoflow3d/gfc-lod13)
+#### LoD1.3 only
+The building reconstruction tool for LoD1.3 models is packaged into a docker image, `geoflow3d/lod13tool`.
+An example command to run the reconstruction in a new container from the image and write the results to a database on the host:
+
+> **NOTE:**
+> the flowchart underpinning lod13tool works very different from the standard one. It is not recommended to use unless you know what you are doing.
+
+```shell
+docker run \
+  --rm \
+  --network=host \
+  -v /my/dir/data:/data/in_out_data \
+  geoflow3d/lod13tool:latest \
+  --config config.toml
+```
 
 ## Citation 
 
