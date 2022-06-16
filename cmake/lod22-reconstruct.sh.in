@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Automatically loading flowchart @CMAKE_INSTALL_PREFIX@/share/geoflow/gfc-brecon/single/reconstruct.json"
+@CMAKE_INSTALL_PREFIX@/bin/geof @CMAKE_INSTALL_PREFIX@/share/geoflow/gfc-brecon/single/reconstruct.json "$@"

@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.21)
 
-project (Geoflow-bundle VERSION 2022.04.01)
+project (Geoflow-bundle VERSION 2022.06.16)
 
 option(GF_BUILD_GUI "Build the GUI components of geoflow" TRUE)
 add_subdirectory(geoflow)
@@ -18,13 +18,26 @@ add_subdirectory(plugins/gfp-gdal)
 add_subdirectory(plugins/gfp-las)
 add_subdirectory(plugins/gfp-val3dity)
 
+# install flowchart file
+install(FILES flowcharts/gfc-brecon/single/reconstruct.json DESTINATION share/geoflow/gfc-brecon/single/)
+
+# install shortcut script for building reconstruction
+if (WIN32)
+  string(REPLACE "/" "\\" CMAKE_INSTALL_PREFIX_WINSLASH ${CMAKE_INSTALL_PREFIX})
+  configure_file(cmake/lod22-reconstruct.bat.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.bat)
+  install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.bat DESTINATION bin)
+else()
+  configure_file(cmake/lod22-reconstruct.sh.in ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh)
+  install(PROGRAMS ${CMAKE_BINARY_DIR}/lod22-reconstruct.sh DESTINATION bin RENAME lod22-reconstruct)
+endif(WIN32)
+
 set(CPACK_PACKAGE_NAME "Geoflow")
 set(CPACK_PACKAGE_VENDOR "3DGI")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geoflow - Software")
-set(CPACK_PACKAGE_VERSION "2022.04.01")
-set(CPACK_PACKAGE_VERSION_MAJOR "2022")
-set(CPACK_PACKAGE_VERSION_MINOR "04")
-set(CPACK_PACKAGE_VERSION_PATCH "22")
+set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PPROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PPROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PPROJECT_VERSION_PATCH})
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Geoflow")
 set(CPACK_PACKAGE_DESCRIPTION "Geoflow is a geospatial 3D ETL tool.")
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/geoflow3d/geoflow-bundle")
