@@ -40,11 +40,6 @@ and enjoy the output files that are created.
 + Well aligned with the point cloud.
 + In GeoPackage or ESRI Shapefile format, or a PostGIS database connection.
 
-## Repository structure
-
-This repository is a collection of components that together form the software that does the building reconstruction.
-The components are added as git submodules, and they are parts, plugins of the *geoflow* software. You can read more about geoflow in the Wiki of this repository.
-
 ## Installation
 
 ### Using the binary packages
@@ -151,7 +146,7 @@ Thus, a parameter set in the command line has the highest priority and overrides
 The flowchart of the building reconstruction is in `flowcharts/gfc-brecon/single/reconstruction.json`.
 You need to use this flowchart to generate the 3D building models.
 However for you convenience we automatically install this flowchart and the script `lod22-reconstruct` to easily run it.
-The command `lod22-reconstruct` (`lod22-reconstruct.bat` on windows) is an alias for `geof flowcharts/gfc-brecon/single/reconstruction.json`..
+The command `lod22-reconstruct` (`lod22-reconstruct.bat` on windows) is an alias for `geof long/path/reconstruction.json`.
 
 Download the [test data](https://data.3dgi.xyz/geoflow-test-data/wippolder.zip) and unzip into a `test-data` directory.
 Then run:
