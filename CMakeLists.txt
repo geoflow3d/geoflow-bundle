@@ -8,7 +8,6 @@ add_subdirectory(geoflow)
 set(GF_PLUGIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/geoflow/cmake/gf_plugin.cpp.in)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/geoflow/src
-  ${CMAKE_CURRENT_SOURCE_DIR}/geoflow/thirdparty/json/include
   ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
