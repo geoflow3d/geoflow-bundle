@@ -230,4 +230,4 @@ jobs:
           draft: true
           prerelease: true
           fail_on_unmatched_files: true
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
