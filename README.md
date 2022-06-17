@@ -62,7 +62,7 @@ cmake --install .
 
 Before compiling this software you will need to install the various dependencies. Please refer to the README's of the respective submodules in this repository for more information.
 
-## General usage of `geof`
+## Usage
 
 Two things are needed for running the reconstruction on some input data.
 1. A *flowchart* that contains the logic of the reconstruction and describes how the various components (plugins and nodes) connect. The *flowchart* is a JSON file.
