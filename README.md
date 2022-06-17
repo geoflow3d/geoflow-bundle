@@ -232,3 +232,9 @@ docker run \
 ## Citation 
 
 If you use the software in scientific publications, please see CITATION.bib
+
+## About us
+
+This software was mostly developed by Ravi Peters, and now also by Balazs Dukai. Geoflow was originally developed during our time at the [3D geoinformation research group](https://3d.bk.tudelft.nl/) at the Delft University of Technology. We are currently working on this software from the company [3DGI](https://3dgi.nl/), a spin-off of said research group.
+
+In case you have the need for professional support (SLA), consultancy, or the implementation of custom features don't hesitate to drop us a line at info@3dgi.nl
