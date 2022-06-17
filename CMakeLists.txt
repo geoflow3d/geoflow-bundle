@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.21)
 
-project (Geoflow-bundle VERSION 2022.06.16)
+project (Geoflow-bundle VERSION 2022.06.17)
 
 option(GF_BUILD_GUI "Build the GUI components of geoflow" TRUE)
 add_subdirectory(geoflow)
@@ -45,7 +45,7 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "Geoflow")
 set(CPACK_PACKAGE_DESCRIPTION "Geoflow is a geospatial 3D ETL tool.")
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/geoflow3d/geoflow-bundle")
 # set(CPACK_RESOURCE_FILE_WELCOME "{CMAKE_SOURCE_DIR}/geoflow/LICENSE")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/geoflow/COPYING")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/geoflow/LICENSE")
 set(CPACK_MONOLITHIC_INSTALL TRUE)
 if (GF_BUILD_GUI)
   set(CPACK_PACKAGE_EXECUTABLES "geoflow;Geoflow")
