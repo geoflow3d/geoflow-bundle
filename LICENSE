@@ -1,1 +1,20 @@
-The components of this repository are licensed individually. See each component (git submodule) for the applicable license. 
+LICENSE
+----------------------------------------------------------------------------
+
+The geoflow-bundle software consists of several parts, each of which is
+licensed under an open source license.
+
+The source code of the geoflow-bundle software can be found in the
+directories "flowcharts/gfc-brecon", "flowcharts/gfc-lod13", "geoflow",
+"plugins/gfp-basic3d", "plugins/gfp-building-reconstruction",
+"plugins/gfp-gdal", "plugins/gfp-las", "plugins/gfp-val3dity".
+It is specified in each file of the geoflow-bundle software which license
+applies to it. It is either GNU General Public License or the
+GNU Affero General Public License (as published by the Free Software
+Foundation; either version 3 of the License or (at your option) any later
+version). The texts of the licenses can be found along with the source
+code of the respective part in the LICENSE file.
+
+All other files that do not have an explicit copyright notice (e.g., all
+examples and some demos) are licensed under the Creative Commons CC0 1.0 license.
+The exact text can be found at https://creativecommons.org/publicdomain/zero/1.0/".
