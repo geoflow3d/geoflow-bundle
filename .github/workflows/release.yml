@@ -173,7 +173,7 @@ jobs:
           path: lod13tool-${{ github.ref_name }}-docker.tar
           retention-days: 1
 
-  build-docker-brecon:
+  build-docker-lod22-reconstruct:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -198,20 +198,20 @@ jobs:
           push: false
           load: true
           tags: geoflow3d/geoflow-bundle-builder:latest
-      - name: Build brecon
+      - name: Build lod22-reconstruct
         run: |
-          docker build --tag geoflow3d/brecon:${{ github.ref_name }} --file brecon.dockerfile .
-          docker save --output brecon-${{ github.ref_name }}-docker.tar geoflow3d/brecon:${{ github.ref_name }}
+          docker build --tag geoflow3d/lod22-reconstruct:${{ github.ref_name }} --file lod22-reconstruct.dockerfile .
+          docker save --output lod22-reconstruct-${{ github.ref_name }}-docker.tar geoflow3d/lod22-reconstruct:${{ github.ref_name }}
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
-          name: brecon-docker
-          path: brecon-${{ github.ref_name }}-docker.tar
+          name: lod22-reconstruct-docker
+          path: lod22-reconstruct-${{ github.ref_name }}-docker.tar
           retention-days: 1
 
   release:
     runs-on: ubuntu-latest
-    needs: [build-exe, build-exe-cli, build-docker-lod13tool, build-docker-brecon]
+    needs: [build-exe, build-exe-cli, build-docker-lod13tool, build-docker-lod22-reconstruct]
     steps:
       - uses: actions/download-artifact@v3
         with:
