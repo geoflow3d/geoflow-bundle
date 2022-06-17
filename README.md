@@ -182,6 +182,8 @@ Make sure that you have prepared your input data according to the *Requirements 
 
 ### Running the building reconstruction with Docker
 
+Download the and load the docker image from the Releases page.
+
 The flowcharts that are needed for the building reconstruction are packaged into the docker images for convenience.
 Thus, you only need to update the global parameters when running a container so that the correct input and output paths are set.
 
@@ -203,7 +205,7 @@ docker run \
   --rm \
   --network=host \
   -v "flowcharts/gfc-brecon:/data" \
-  geoflow3d/brecon:latest \
+  geoflow3d/lod22-reconstruct:latest \
   --input_footprint=/data/test-data/wippolder.gpkg \
   --input_pointcloud=/data/test-data/wippolder.las \
   --output_cityjson=/data/output_docker/model.json \

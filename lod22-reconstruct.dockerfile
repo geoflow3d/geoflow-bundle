@@ -2,7 +2,7 @@ FROM scratch
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
-LABEL org.opencontainers.image.title="brecon"
+LABEL org.opencontainers.image.title="lod22-reconstruct"
 LABEL org.opencontainers.image.description="Tool for reconstructing building models"
 LABEL org.opencontainers.image.version=$VERSION
 
