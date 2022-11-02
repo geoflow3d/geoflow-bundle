@@ -43,7 +43,7 @@ and enjoy the output files that are created.
 ## Installation
 
 ### Using the binary packages
-It will probably be easiest to use one of the binary packages on the Release page (docker, windows installer) as explained below. 
+It will probably be easiest to use one of the binary packages on the Release page (docker, windows installer) as explained below. In case you are on windows, the **cli** version is recommended.
 
 ### Building from source
 In case you can not or do not want to use the binary packages, you can also build everything from source. This is only recommended if you know what you are doing, ie. have experience in compiling software.
@@ -235,7 +235,7 @@ docker run \
 
 If you use the software in scientific publications, please see CITATION.bib
 
-## About us
+## About Geoflow
 
 This software was mostly developed by Ravi Peters, and now also by Balazs Dukai. Geoflow was originally developed during our time at the [3D geoinformation research group](https://3d.bk.tudelft.nl/) at the Delft University of Technology. We are currently working on this software from the company [3DGI](https://3dgi.nl/), a spin-off of said research group.
 
