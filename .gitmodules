@@ -22,3 +22,6 @@
 [submodule "buildtools/vcpkg"]
 	path = buildtools/vcpkg
 	url = git@github.com:microsoft/vcpkg.git
+[submodule "flowcharts/gfc-brecon"]
+	path = flowcharts/gfc-brecon
+	url = git@github.com:geoflow3d/gfc-brecon.git

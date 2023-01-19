@@ -1,0 +1,3 @@
+@ECHO OFF
+ECHO Automatically loading flowchart %GF_INSTALL_ROOT%\share\geoflow\gfc-brecon\single\reconstruct.json
+geof "%GF_INSTALL_ROOT%\share\geoflow\gfc-brecon\single\reconstruct.json" %*
