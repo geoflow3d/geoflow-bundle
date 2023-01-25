@@ -1,8 +1,8 @@
-FROM ubuntu:lunar
+FROM ubuntu:lunar-20221216
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
-LABEL org.opencontainers.image.title="geoflow-bundle-base"
+LABEL org.opencontainers.image.title="geoflow-bundle-base-ubuntu"
 LABEL org.opencontainers.image.description="Base image for building the geoflow-bundle."
 LABEL org.opencontainers.image.version=$VERSION
 LABEL org.opencontainers.image.licenses="MIT"
@@ -59,7 +59,6 @@ RUN cd /tmp && \
 
 ARG FGDB_VERSION=1.5.2
 ARG GDAL_VERSION=3.6.2
-# cmake .. -DENABLE_IPO=ON  -DCMAKE_CXX_FLAGS_RELEASE="-O3" -DCMAKE_C_FLAGS_RELEASE="-O3" -DFileGDB_ROOT=/usr/local -DBUILD_PYTHON_BINDINGS=OFF -DBUILD_TESTING=OFF && \
 RUN cd /tmp && \
     git clone https://github.com/Esri/file-geodatabase-api.git && \
     tar -xf file-geodatabase-api/FileGDB_API_${FGDB_VERSION}/FileGDB_API-RHEL7-64gcc83.tar.gz && \
@@ -78,11 +77,4 @@ RUN cd /tmp && \
     ldconfig && \
     rm -rf /tmp/*
 
-COPY . /tmp/geoflow-bundle
-
-RUN cd /tmp/geoflow-bundle && \
-    mkdir build && cd build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DGF_BUILD_GUI=OFF && \
-    cmake --build . --parallel $JOBS --config Release && \
-    cmake --install . && \
-    rm -rf /tmp/*
+RUN ldconfig

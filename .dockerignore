@@ -1,4 +1,24 @@
 .vs
 .run
 .github
+.git
+.idea
+
+docs
+
+# build directories
 build
+build-win
+geoflow/build
+plugins/gfp-basic3d/build
+plugins/gfp-building-reconstruction/build
+plugins/gfp-gdal/build
+plugins/gfp-las/build
+plugins/gfp-val3dity/build
+
+geoflow/out
+plugins/gfp-basic3d/out
+plugins/gfp-building-reconstruction/out
+plugins/gfp-gdal/out
+plugins/gfp-las/out
+plugins/gfp-val3dity/out
