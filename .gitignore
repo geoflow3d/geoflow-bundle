@@ -15,3 +15,9 @@
 # Build
 build
 build-win
+geoflow/build
+plugins/gfp-basic3d/build
+plugins/gfp-building-reconstruction/build
+plugins/gfp-gdal/build
+plugins/gfp-las/build
+plugins/gfp-val3dity/build
