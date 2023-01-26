@@ -78,3 +78,29 @@ RUN cd /tmp && \
     rm -rf /tmp/*
 
 RUN ldconfig
+# install geoflow
+COPY . /tmp/geoflow-bundle
+RUN cd /tmp/geoflow-bundle && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DGF_BUILD_GUI=OFF && \
+    cmake --build . --parallel $JOBS --config Release && \
+    cmake --install . && \
+    rm -rf /tmp/*
+
+# install citygml-tools
+RUN apt-get update && apt-get -y install unzip default-jre && \
+    cd /tmp && \
+    wget https://github.com/citygml4j/citygml-tools/releases/download/v2.0.0/citygml-tools-2.0.0.zip && \
+    unzip citygml-tools-2.0.0.zip && \
+    mv citygml-tools-2.0.0 /opt/ && \
+    ln -s /opt/citygml-tools-2.0.0/citygml-tools /usr/local/bin/citygml-tools && \
+    rm -rf /tmp/*
+
+WORKDIR /data
+USER 1000
+
+# ENTRYPOINT ["citygml-tools"]
+# CMD ["--help"]
+
+# docker build -t gf-ubuntu-base -f base-ubuntu.dockerfile 
+# docker run -it gf-ubuntu-base 
