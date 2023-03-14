@@ -1,4 +1,4 @@
-FROM balazsdukai/geoflow-bundle-base-ubuntu:latest
+FROM balazsdukai/geoflow-bundle-base-ubuntu:kinetic
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
@@ -40,6 +40,10 @@ RUN cd $geoflow_src/build && cmake --install .
 # Check geoflow
 RUN echo $(geof -p)
 
+# So that CLion can install the cmake target when run in a docker container, because
+# CLion maps the host UID as the container user
+RUN chmod -R a+w $GF_PLUGIN_FOLDER
+
 #
 # Export the dependencies
 #
@@ -57,3 +61,7 @@ RUN mkdir /export && \
     -f $GF_PLUGIN_FOLDER/gfp_val3dity.so \
     -f $GF_PLUGIN_FOLDER/gfp_las.so
 RUN mkdir --parents "/export/usr/local/geoflow-flowcharts/gfc-lod13" "/export/usr/local/geoflow-flowcharts/gfc-brecon"
+
+ARG UID=1000
+RUN useradd -m -u ${UID} -s /bin/bash builder
+USER builder
