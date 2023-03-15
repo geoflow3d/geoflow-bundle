@@ -1,11 +1,11 @@
-FROM balazsdukai/geoflow-bundle-base-ubuntu:kinetic
+FROM balazsdukai/geoflow-bundle-base:2023.03.15
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
 LABEL org.opencontainers.image.title="geoflow-bundle-builder-ubuntu"
 LABEL org.opencontainers.image.description="Builder image for building the geoflow executable with all of its plugins for building reconstruction."
 LABEL org.opencontainers.image.version=$VERSION
-LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.licenses="(GPL-3 OR AGPL-3)"
 
 ARG JOBS
 ARG geoflow_src="/usr/src/geoflow-bundle"
@@ -13,7 +13,7 @@ ARG geoflow_src="/usr/src/geoflow-bundle"
 ARG GF_PLUGIN_FOLDER="/usr/local/lib/geoflow-plugins"
 
 # Debug dependencies and need bash for stripping the image
-RUN apt-get install -y gdb bash
+RUN apt-get update && apt-get install -y gdb bash
 
 # Only copy what's needed for the build so the docker image build is faster
 COPY ./cmake $geoflow_src/cmake
@@ -62,6 +62,6 @@ RUN mkdir /export && \
     -f $GF_PLUGIN_FOLDER/gfp_las.so
 RUN mkdir --parents "/export/usr/local/geoflow-flowcharts/gfc-lod13" "/export/usr/local/geoflow-flowcharts/gfc-brecon"
 
-ARG UID=1000
-RUN useradd -m -u ${UID} -s /bin/bash builder
-USER builder
+#ARG UID=1000
+#RUN useradd -m -u ${UID} -s /bin/bash builder
+#USER builder

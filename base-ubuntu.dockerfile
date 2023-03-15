@@ -1,4 +1,4 @@
-FROM ubuntu:kinetic-20230126
+FROM ubuntu:lunar-20230301
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
