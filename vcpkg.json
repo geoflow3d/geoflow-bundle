@@ -8,7 +8,7 @@
     { "name":  "lastools", "version>=": "2020-05-09" },
     { "name": "cgal", "version>=":  "5.3" },
     "eigen3",
-    { "nlohmann-json", "version>=": "3.10.5",
+    { "nlohmann-json", "version>=": "3.10.5" },
     { "name": "proj", "version>=": "9.0.0" },
     { "name": "geos", "version>=": "3.10.2" },
     {
