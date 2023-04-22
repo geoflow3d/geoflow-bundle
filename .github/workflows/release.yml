@@ -111,6 +111,11 @@ jobs:
         with:
           submodules: recursive
       # Same problem as in build-exe. See above.
+      - name: Setup vcpkg
+        run: |
+          cd ${{ matrix.vcpkg_installation_root }}
+          git pull
+          bootstrap-vcpkg.bat
       - name: Make directories
         run: mkdir $GITHUB_WORKSPACE/build
       - name: CMake build
