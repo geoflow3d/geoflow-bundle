@@ -6,7 +6,7 @@
     { "name": "boost-geometry", "version>=": "1.77.0" },
     "glm",
     { "name":  "lastools", "version>=": "2020-05-09" },
-    { "name": "cgal", "version>=":  "5.4" },
+    { "name": "cgal", "version>=":  "5.5" },
     "eigen3",
     { "name": "nlohmann-json", "version>=": "3.11.2" },
     { "name": "proj"},
