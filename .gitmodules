@@ -1,27 +1,27 @@
 [submodule "geoflow"]
 	path = geoflow
-	url = git@github.com:geoflow3d/geoflow.git
+	url = https://github.com/geoflow3d/geoflow.git
 [submodule "plugins/gfp-gdal"]
 	path = plugins/gfp-gdal
-	url = git@github.com:geoflow3d/gfp-gdal.git
+	url = https://github.com/geoflow3d/gfp-gdal.git
 [submodule "plugins/gfp-las"]
 	path = plugins/gfp-las
-	url = git@github.com:geoflow3d/gfp-las.git
+	url = https://github.com/geoflow3d/gfp-las.git
 [submodule "plugins/gfp-val3dity"]
 	path = plugins/gfp-val3dity
-	url = git@github.com:geoflow3d/gfp-val3dity.git
+	url = https://github.com/geoflow3d/gfp-val3dity.git
 [submodule "flowcharts/gfc-lod13"]
 	path = flowcharts/gfc-lod13
-	url = git@github.com:geoflow3d/gfc-lod13.git
+	url = https://github.com/geoflow3d/gfc-lod13.git
 [submodule "plugins/gfp-basic3d"]
 	path = plugins/gfp-basic3d
-	url = git@github.com:geoflow3d/gfp-basic3d.git
+	url = https://github.com/geoflow3d/gfp-basic3d.git
 [submodule "plugins/gfp-building-reconstruction"]
 	path = plugins/gfp-building-reconstruction
-	url = git@github.com:geoflow3d/gfp-building-reconstruction.git
+	url = https://github.com/geoflow3d/gfp-building-reconstruction.git
 [submodule "buildtools/vcpkg"]
 	path = buildtools/vcpkg
-	url = git@github.com:microsoft/vcpkg.git
+	url = https://github.com/microsoft/vcpkg.git
 [submodule "flowcharts/gfc-brecon"]
 	path = flowcharts/gfc-brecon
-	url = git@github.com:geoflow3d/gfc-brecon.git
+	url = https://github.com/geoflow3d/gfc-brecon.git
