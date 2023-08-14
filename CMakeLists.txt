@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.21)
 
-project (Geoflow-bundle VERSION 2023.07.17)
+project (Geoflow-bundle VERSION 2023.08.14)
 
 option(GF_BUILD_GUI "Build the GUI components of geoflow" TRUE)
 add_subdirectory(geoflow)
