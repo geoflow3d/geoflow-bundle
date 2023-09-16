@@ -98,7 +98,7 @@ Options:
 A flowchart can contain some parameters that are set for the whole flowchart. These are called *globals*
 To see the global parameters of a flowchart and their explanation pass the `--list-globals` option.
 ```shell
-geof flowchart.json --list-globals
+geof flowchart.json --verbose --list-globals
 ```
 An example of the flowchart globals printed by `--list-globals`:
 ```shell
@@ -106,9 +106,9 @@ Available globals:
  > building_identifier [Unique identifier attribute present in input footprint source]
    default value: "fid"
  > input_footprint [Input 2D vector file with building footprint(s)]
-   default value: "test-data/wippolder.gpkg"
- > input_footprint_select [Feature number to load (value must be in the range 1 to number of features in foootprint input)]
-   default value: 1
+   default value: ""
+ > input_footprint_select_sql ["OGR SQL statement to select one input footprint from the input_footprint file, eg \"fid=47\"]
+   default value: "fid=47\"
 ...
 ```
 
@@ -160,7 +160,7 @@ lod22-reconstruct \
 
 Here we override the default values that are set in the flowchart. 
 The `input_footprint` and `input_pointcloud` are passed directly in the command line.
-In addition, the `input_footprint_select=47` (to select the 47th feature from the input footprint file) is read from the config file `config.toml`.
+In addition, the `input_footprint_select_sql='fid=47'` (to select the 47th feature from the input footprint file) is read from the config file `config.toml`.
 
 Combining the command line parameters and the config file allows you to keep the parameters that don't change with each model in the configuration file, while passing input and output parameters in the command line.
 
