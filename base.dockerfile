@@ -60,7 +60,7 @@ RUN cd /tmp && \
 ARG FGDB_VERSION=1.5.2
 ARG GDAL_VERSION=3.7.3
 RUN cd /tmp && \
-    apt-get install -y libexpat-dev
+    apt-get install -y libexpat-dev && \
     git clone https://github.com/Esri/file-geodatabase-api.git && \
     tar -xf file-geodatabase-api/FileGDB_API_${FGDB_VERSION}/FileGDB_API-RHEL7-64gcc83.tar.gz && \
     rm -rf /tmp/FileGDB_API-RHEL7-64gcc83/lib/libstdc++.so* && \
