@@ -45,7 +45,7 @@ RUN cd /tmp && \
     rm -rf /tmp/* && \
     mkdir /tmp/geoflow-bundle
 
-ARG CGAL_VERSION=5.4
+ARG CGAL_VERSION=5.5
 RUN cd /tmp && \
     apt-get install -y libboost-system-dev libboost-thread-dev libgmp-dev libmpfr-dev zlib1g-dev && \
     wget https://github.com/CGAL/cgal/releases/download/v${CGAL_VERSION}/CGAL-${CGAL_VERSION}.tar.xz && \
@@ -58,7 +58,7 @@ RUN cd /tmp && \
     rm -rf /tmp/*
 
 ARG FGDB_VERSION=1.5.2
-ARG GDAL_VERSION=3.6.2
+ARG GDAL_VERSION=3.7.3
 RUN cd /tmp && \
     git clone https://github.com/Esri/file-geodatabase-api.git && \
     tar -xf file-geodatabase-api/FileGDB_API_${FGDB_VERSION}/FileGDB_API-RHEL7-64gcc83.tar.gz && \
