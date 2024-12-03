@@ -1,22 +1,21 @@
 {
   "name": "geoflow-bundle",
-  "version-date": "2023-03-21",
+  "version-date": "2024-03-08",
   "dependencies": [
     "glfw3",
-    { "name": "boost-geometry", "version>=": "1.77.0" },
+    "boost-geometry",
+    "boost-format",
     "glm",
-    { "name":  "lastools", "version>=": "2020-05-09" },
-    { "name": "cgal", "version>=":  "5.5" },
+    "lastools",
+    "cgal",
     "eigen3",
-    { "name": "nlohmann-json", "version>=": "3.11.2" },
-    { "name": "proj"},
-    { "name": "geos", "version>=": "3.10.2" },
+    "nlohmann-json",
+    "proj",
+    "geos",
     {
       "name": "gdal",
-      "default-features": false,
-      "features": [ "postgresql" ],
-      "version>=": "3.6.3"
+      "features": ["recommended-features", "postgresql"]
     }
   ],
-  "builtin-baseline": "b86c0c35b88e2bf3557ff49dc831689c2f085090"
+  "builtin-baseline": "ab887c562326c686478284d9076d722c1ec4b48c"
 }
