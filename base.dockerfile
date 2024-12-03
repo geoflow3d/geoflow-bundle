@@ -1,4 +1,4 @@
-FROM ubuntu:lunar-20230301
+FROM ubuntu:noble-20241118.1
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
@@ -22,9 +22,9 @@ RUN apt-get update && apt-get -y install \
     cmake
 
 RUN cd /tmp && \
-    wget https://download.osgeo.org/proj/proj-9.1.0.tar.gz && \
-    tar -zxvf proj-9.1.0.tar.gz  && \
-    cd proj-9.1.0 && \
+    wget https://download.osgeo.org/proj/proj-9.5.1.tar.gz && \
+    tar -zxvf proj-9.5.1.tar.gz  && \
+    cd proj-9.5.1 && \
     mkdir build && \
     cd build/ && \
     cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF && \
