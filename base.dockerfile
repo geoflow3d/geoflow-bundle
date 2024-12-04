@@ -45,7 +45,7 @@ RUN cd /tmp && \
     rm -rf /tmp/* && \
     mkdir /tmp/geoflow-bundle
 
-ARG CGAL_VERSION=5.5
+ARG CGAL_VERSION=5.6.2
 RUN cd /tmp && \
     apt-get install -y libboost-system-dev libboost-thread-dev libgmp-dev libmpfr-dev zlib1g-dev && \
     wget https://github.com/CGAL/cgal/releases/download/v${CGAL_VERSION}/CGAL-${CGAL_VERSION}.tar.xz && \
