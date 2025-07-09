@@ -1,5 +1,6 @@
 FROM 3dgi/geoflow-bundle-base:2024.12.04
 ARG VERSION
+ARG BUILD_TYPE=Release
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
 LABEL org.opencontainers.image.title="geoflow-bundle-builder-ubuntu"
@@ -28,10 +29,10 @@ RUN chmod 1777 $geoflow_src && \
     mkdir -p $GF_PLUGIN_FOLDER && \
     mkdir -p build && cd build && \
     cmake .. \
-      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
       -DGF_BUILD_GUI=OFF \
       -DGF_PLUGIN_FOLDER=$GF_PLUGIN_FOLDER && \
-    cmake --build . --parallel $JOBS --config Release
+    cmake --build . --parallel $JOBS --config $BUILD_TYPE
 # Split the install from the build, because it makes easier to debug installation issues
 RUN cd $geoflow_src/build && cmake --install .
 # Do not clean up $geoflow_src here, so that the build cache is not invalidated unless
