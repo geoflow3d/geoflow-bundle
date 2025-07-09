@@ -1,4 +1,4 @@
-FROM ubuntu:noble-20241118.1
+FROM ubuntu:noble-20250619
 ARG VERSION
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
