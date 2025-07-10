@@ -1,4 +1,4 @@
-FROM 3dgi/geoflow-bundle-base:2024.12.04
+FROM 3dgi/geoflow-bundle-base:2025.07.09
 ARG VERSION
 ARG BUILD_TYPE=Release
 LABEL org.opencontainers.image.authors="Balázs Dukai <balazs.dukai@3dgi.nl>"
