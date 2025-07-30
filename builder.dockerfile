@@ -13,8 +13,8 @@ ARG geoflow_src="/usr/src/geoflow-bundle"
 # Because explicit is better than defaults
 ARG GF_PLUGIN_FOLDER="/usr/local/lib/geoflow-plugins"
 
-# Debug dependencies and need bash for stripping the image
-RUN apt-get update && apt-get install -y gdb bash
+# Need bash for stripping the image
+RUN apt-get update && apt-get install -y bash
 
 # Only copy what's needed for the build so the docker image build is faster
 COPY ./cmake $geoflow_src/cmake
